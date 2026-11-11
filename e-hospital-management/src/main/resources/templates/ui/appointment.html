@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{ui/fragments/clinic :: head('Appointment')}"></head>
+<body class="clinic-page" x-data="appointmentWorkspace()">
+<script th:inline="javascript">window.APPT={id:/*[[${appointmentId}]]*/ '',role:/*[[${role}]]*/ '',doctor:/*[[${doctorId}]]*/ ''};</script>
+<script defer src="/ui/appointment.js"></script><script defer src="/ui/vendor/alpine.js"></script>
+<header th:replace="~{ui/fragments/clinic :: top('appointments')}"></header>
+<main class="clinic-shell">
+  <div class="demo-banner">Synthetic demo data · Clinician review is required for every clinical document.</div>
+  <div class="alert-box error" role="alert" x-show="error" x-text="error" x-cloak></div>
+  <div class="alert-box ok" role="status" x-show="message" x-text="message" x-cloak></div>
+
+  <!-- Patient header -->
+  <section class="clinic-card patient-head" x-show="j.patient?.id" x-cloak>
+    <div class="patient-avatar" x-text="initials(p.name)"></div>
+    <div>
+      <small class="muted mono" x-text="p.id"></small>
+      <h1 data-no-translate x-text="p.name"></h1>
+      <div class="patient-meta">
+        <span x-show="age!==''"><span x-text="age"></span> <span>years</span></span><span data-ui-text x-text="p.gender"></span>
+        <span data-no-translate x-text="a.doctorLabel || v.doctorLabel"></span><span data-no-translate x-text="a.departmentLabel || v.departmentLabel"></span>
+        <span x-show="a.date"><span x-text="a.date"></span> · <span x-text="a.time"></span></span>
+      </div>
+      <div class="patient-alerts" x-show="clinical">
+        <span class="pill pill-red" x-show="p.allergies"><span>Allergies</span><span data-no-translate x-text="p.allergies"></span></span>
+        <span class="pill pill-green" x-show="clinical && !p.allergies">No known allergies recorded</span>
+        <span class="pill pill-amber" x-show="p.conditions" data-no-translate x-text="p.conditions"></span>
+      </div>
+    </div>
+    <div class="head-side">
+      <span class="pill" :class="'pill-'+Clinic.tone(a.status)" data-ui-text x-text="a.status" x-show="a.status"></span>
+      <span class="small" x-show="v.id"><span>Visit</span> <span class="mono" x-text="v.id"></span></span>
+      <span class="ticket-big" x-show="q.name" x-text="q.name"></span>
+      <span class="pill" :class="'pill-'+Clinic.tone(q.status)" x-show="q.status"><span data-ui-text x-text="q.status"></span><template x-if="j.position>0"><span>· #<span x-text="j.position"></span></span></template></span>
+    </div>
+  </section>
+
+  <!-- Next action -->
+  <section class="next-action" x-show="j.next?.action" x-cloak>
+    <div><small class="muted">Next step</small><br><strong data-ui-text x-text="j.next?.label"></strong><p data-ui-text x-text="j.next?.detail"></p></div>
+    <button class="btn btn-primary" @click="doNext()" :disabled="busy || !canDo(j.next?.action)" x-text="nextLabel()"></button>
+  </section>
+
+  <!-- Journey -->
+  <section class="clinic-card">
+    <h2>Patient journey</h2>
+    <ol class="pj" :style="'--steps:'+(j.steps||[]).length" aria-label="Patient journey">
+      <template x-for="s in j.steps||[]" :key="s.key">
+        <li class="pj-step" :class="s.status" :aria-current="s.status==='current'?'step':null">
+          <span class="dot" x-text="Clinic.stepIcon[s.status]"></span>
+          <div class="text"><strong data-ui-text x-text="s.label"></strong><span class="owner" data-ui-text x-text="s.owner"></span><span class="pill" :class="'pill-'+({done:'green',current:'teal',blocked:'amber',cancelled:'red'}[s.status]||'grey')" data-ui-text x-text="statusWord(s.status)"></span><span class="detail" data-ui-text x-text="s.detail"></span></div>
+        </li>
+      </template>
+    </ol>
+  </section>
+
+  <div class="two-col">
+    <div style="display:grid;gap:16px">
+      <!-- Medical record (clinical roles only) -->
+      <section class="clinic-card" x-show="clinical">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h2>Medical record</h2><a class="btn btn-white btn-sm" :href="'/care/patients/'+p.id">Open full patient record</a></div>
+        <div class="tabs-line" role="tablist"><template x-for="t in recordTabs"><button role="tab" :class="{active:recordTab===t}" :aria-selected="recordTab===t" @click="recordTab=t" x-text="t"></button></template></div>
+        <div x-show="recordTab==='Summary'">
+          <dl class="kv">
+            <dt>Allergies</dt><dd data-no-translate x-text="p.allergies || '—'"></dd>
+            <dt>Conditions</dt><dd data-no-translate x-text="p.conditions || '—'"></dd>
+            <dt>Blood group</dt><dd x-text="p.bloodGroup || '—'"></dd>
+            <dt>Latest vitals</dt><dd><span x-show="vitals" x-text="vitals ? [vitals.bloodPressure&&vitals.bloodPressure+' mmHg',vitals.temperature&&vitals.temperature+' °C',vitals.pulse&&vitals.pulse+' bpm',vitals.oxygen&&'SpO₂ '+vitals.oxygen+'%'].filter(Boolean).join(' · ') : ''"></span><span x-show="!vitals">Not recorded</span></dd>
+            <dt>Previous visits</dt><dd x-text="(ctx.history?.visits||[]).length"></dd>
+          </dl>
+        </div>
+        <template x-for="t in ['Visits','Notes','Diagnoses','Lab results','Imaging','Prescriptions','Certificates']">
+          <div x-show="recordTab===t">
+            <template x-for="r in records(t)" :key="r.id"><div class="record-row"><div><strong data-no-translate x-text="r.title"></strong><small data-no-translate x-text="r.sub"></small></div><span class="pill" :class="'pill-'+Clinic.tone(r.status)" data-ui-text x-text="r.status"></span></div></template>
+            <div class="empty" x-show="!records(t).length">No records yet.</div>
+          </div>
+        </template>
+      </section>
+      <section class="clinic-card" x-show="!clinical">
+        <h2>Medical record</h2><p class="muted">Clinical information is visible to doctors and nurses only.</p>
+      </section>
+      <!-- Appointment details -->
+      <section class="clinic-card">
+        <h2>Appointment details</h2>
+        <dl class="kv">
+          <dt>Appointment</dt><dd class="mono" x-text="a.id"></dd>
+          <dt>Title</dt><dd data-no-translate x-text="a.name"></dd>
+          <dt>Visit type</dt><dd data-ui-text x-text="a.type"></dd>
+          <dt>Reason for visit</dt><dd data-no-translate x-text="a.reason || '—'"></dd>
+          <dt>Arrival</dt><dd data-ui-text x-text="a.arrivalStatus"></dd>
+          <dt>Consultation</dt><dd data-ui-text x-text="a.consultationStatus"></dd>
+          <dt x-show="j.invoice?.id">Invoice</dt><dd x-show="j.invoice?.id"><span x-text="j.invoice?.id"></span> · <span data-ui-text x-text="j.invoice?.status"></span> · <span x-text="j.invoice?.total"></span></dd>
+        </dl>
+        <h3>Check-in history</h3>
+        <template x-for="c in j.checkIns||[]"><div class="record-row"><div><strong data-ui-text x-text="c.method"></strong><small x-text="c.time.replace('T',' ')+' · '+c.actor"></small></div><span class="mono small" x-text="c.encounter"></span></div></template>
+        <div class="empty" x-show="!(j.checkIns||[]).length">Not checked in yet.</div>
+      </section>
+    </div>
+
+    <!-- Actions -->
+    <aside class="clinic-card" style="position:sticky;top:180px">
+      <h2>Actions</h2>
+      <div class="action-group" x-show="clinicalActions.length">
+        <h3>Clinical</h3>
+        <div class="action-grid"><template x-for="act in clinicalActions" :key="act.key"><button class="btn" :class="act.primary?'btn-primary':'btn-white'" @click="run(act)" :disabled="busy" x-text="act.label"></button></template></div>
+      </div>
+      <div class="action-group">
+        <h3>Administrative</h3>
+        <div class="action-grid"><template x-for="act in adminActions" :key="act.key"><button class="btn" :class="act.danger?'btn-white danger-text':(act.primary?'btn-primary':'btn-white')" @click="run(act)" :disabled="busy" x-text="act.label"></button></template></div>
+        <div class="empty" x-show="!adminActions.length">No administrative actions for this status.</div>
+      </div>
+      <form class="action-group" x-show="rescheduling" x-cloak @submit.prevent="reschedule()">
+        <h3>Reschedule</h3>
+        <div class="form-row"><label for="rs-date">New date</label><input id="rs-date" type="date" x-model="rs.date" :min="today" required></div>
+        <div class="form-row"><label for="rs-time">New time</label><input id="rs-time" type="time" x-model="rs.time" required></div>
+        <div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-primary" :disabled="busy">Save new time</button><button type="button" class="btn btn-white" @click="rescheduling=false">Cancel</button></div>
+      </form>
+    </aside>
+  </div>
+</main>
+</body>
+</html>

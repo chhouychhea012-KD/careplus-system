@@ -1,0 +1,23 @@
+{
+  "name": "careplus-hospital-ui",
+  "private": true,
+  "scripts": {
+    "css": "tailwindcss -i ./src/main/resources/static/ui/tailwind.input.css -o ./src/main/resources/static/ui/tailwind.css --minify",
+    "test:browser": "node scripts/browser-test.cjs",
+    "test:care": "node scripts/care-browser-test.cjs",
+    "test:i18n": "node scripts/check-i18n.cjs",
+    "test:journey": "node scripts/journey-test.cjs",
+    "test:qr": "node scripts/qr-mini-test.cjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "tailwindcss": "3.4.19"
+  },
+  "dependencies": {
+    "alpinejs": "3.14.9",
+    "chart.js": "4.4.8",
+    "jsqr": "1.4.0",
+    "lucide": "0.468.0",
+    "qrcode-generator": "1.5.2"
+  }
+}

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{ui/fragments/clinic :: head('Telegram Mini App')}"></head>
+<body class="clinic-page" x-data="telegramSettings()">
+<script th:inline="javascript">window.TG={role:/*[[${role}]]*/ ''};</script>
+<script defer src="/ui/vendor/qrcode.js"></script><script defer src="/ui/telegram.js"></script><script defer src="/ui/vendor/alpine.js"></script>
+<header th:replace="~{ui/fragments/clinic :: top('telegram')}"></header>
+<main class="clinic-shell">
+  <div><small class="muted">Settings</small><h1 style="font-size:26px;font-weight:700;margin:0">Telegram Mini App</h1><p class="muted" style="margin:2px 0 0">QR codes open the hospital Mini App in Telegram. Opening the app never grants access by itself: users must link a verified hospital account.</p></div>
+  <div class="alert-box error" role="alert" x-show="error" x-text="error" x-cloak></div>
+  <div class="alert-box ok" role="status" x-show="message" x-text="message" x-cloak></div>
+
+  <section class="clinic-card" style="display:grid;gap:10px">
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h2 style="margin:0">Integration status</h2><span class="pill" :class="s.live?'pill-green':'pill-amber'" data-ui-text x-text="s.status"></span><span class="pill pill-grey"><span>Mode</span>: <span data-ui-text x-text="s.mode==='integration'?'Integration':'Demo'"></span></span></div>
+    <div x-show="(s.missing||[]).length"><strong class="small">Still needed for live phone access:</strong><ul class="small" style="margin:6px 0 0 18px;list-style:disc"><template x-for="m in s.missing||[]"><li data-ui-text x-text="m"></li></template></ul></div>
+    <p class="small muted">The bot token is read only from a server environment variable and is never shown or sent to browsers.</p><p class="small muted"><span>Token variable</span>: <code data-no-translate>CAREPLUS_TELEGRAM_BOT_TOKEN</code> · <span>Require Telegram sign-in</span>: <code data-no-translate>careplus.mode=integration</code></p>
+  </section>
+
+  <div class="two-col">
+    <div style="display:grid;gap:16px">
+      <section class="clinic-card">
+        <h2>Access QR codes</h2>
+        <div class="demo-banner" x-show="links.kind==='demo'" style="margin-bottom:12px">Demo QR codes: no bot username is configured, so these open the local web preview instead of Telegram. They will not open on a phone unless this server is reachable from it.</div>
+        <div class="qr-grid">
+          <template x-for="item in qrItems" :key="item.key">
+            <div style="display:grid;gap:8px">
+              <h3 style="margin:0" data-ui-text x-text="item.title"></h3>
+              <div class="qr-box" x-html="Clinic.qrSvg(item.link,200)"></div>
+              <p class="mono small" style="word-break:break-all" x-text="item.link"></p>
+              <p class="muted small" data-ui-text x-text="item.note"></p>
+              <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-white btn-sm" @click="copy(item.link)">Copy link</button><button class="btn btn-white btn-sm" @click="print(item)">Print poster</button></div>
+            </div>
+          </template>
+        </div>
+      </section>
+      <section class="clinic-card">
+        <h2>Linked Telegram accounts</h2>
+        <template x-for="a in s.accounts||[]" :key="a.telegramUser+a.identity"><div class="record-row" style="align-items:center"><div><strong><span data-ui-text x-text="a.role"></span> · <span class="mono" x-text="a.identity"></span></strong><small><span x-text="a.telegramUser"></span> · <span x-text="(a.linkedAt||'').slice(0,16).replace('T',' ')"></span> · <span>Notifications</span> <span data-ui-text x-text="a.notifications==='on'?'On':'Off'"></span></small></div><button class="btn btn-white btn-sm danger-text" @click="unlink(a)">Unlink</button></div></template>
+        <div class="empty" x-show="!(s.accounts||[]).length">No Telegram accounts are linked.</div>
+      </section>
+      <section class="clinic-card">
+        <h2>Notification outbox</h2>
+        <p class="muted small">Opt-in reminders only. Messages never include diagnoses, results, prescriptions or documents.</p>
+        <template x-for="m in s.outbox||[]"><div class="record-row"><div><strong data-no-translate x-text="m.text"></strong><small><span x-text="m.time.slice(0,16).replace('T',' ')"></span> · <span x-text="m.to"></span></small></div><span class="pill" :class="m.status==='Sent'?'pill-green':'pill-grey'" data-ui-text x-text="m.status"></span></div></template>
+        <div class="empty" x-show="!(s.outbox||[]).length">No notifications yet.</div>
+      </section>
+    </div>
+    <aside style="display:grid;gap:16px;align-content:start">
+      <form class="clinic-card" style="display:grid;gap:10px" @submit.prevent="save()">
+        <h2>Bot configuration</h2>
+        <div class="form-row"><label for="tg-bot">Bot username</label><input id="tg-bot" x-model="form.botUsername" placeholder="CarePlusHospitalBot" autocomplete="off"></div>
+        <div class="form-row"><label for="tg-short">Mini App short name (optional)</label><input id="tg-short" x-model="form.shortName" placeholder="care" autocomplete="off"><small class="muted">Use the short name from /newapp. Leave empty to use the bot's main Mini App.</small></div>
+        <div class="form-row"><label for="tg-url">Public HTTPS application URL</label><input id="tg-url" x-model="form.publicUrl" placeholder="https://care.example.org" autocomplete="off"><small class="muted">In BotFather, the Mini App URL is this address followed by /tg.</small></div>
+        <button class="btn btn-primary" :disabled="busy">Save configuration</button>
+      </form>
+      <section class="clinic-card" style="display:grid;gap:8px">
+        <h2>Link a doctor's Telegram</h2>
+        <p class="muted small">Only administrators issue staff codes, after verifying the doctor in person.</p>
+        <div class="form-row"><label for="tg-doc">Doctor</label><select id="tg-doc" x-model="doctor"><option value="">Select a doctor</option><template x-for="d in doctors"><option data-no-translate :value="d.id" x-text="d.name+' · '+d.id"></option></template></select></div>
+        <button class="btn btn-primary" @click="doctorCode()" :disabled="busy||!doctor">Create doctor link code</button>
+        <div x-show="code.code" x-cloak><div class="link-code mono" x-text="code.code"></div><p class="muted small"><span>Expires</span> <span x-text="(code.expires||'').slice(0,16).replace('T',' ')"></span> <span data-no-translate>UTC</span></p></div>
+      </section>
+      <section class="clinic-card small" style="display:grid;gap:6px">
+        <h2>Setup steps</h2>
+        <ol style="margin:0 0 0 18px;list-style:decimal;display:grid;gap:4px">
+          <li>Create a bot with @BotFather (/newbot).</li><li>Host this server at a public HTTPS address.</li><li>In BotFather (/newapp or Bot Settings → Configure Mini App), set the Mini App URL to your public address followed by /tg.</li><li>Set the bot token environment variable and integration mode, then restart the server.</li><li>Enter the bot username and public URL here, then print the posters.</li>
+        </ol>
+        <p class="muted"><span>Full guide</span>: <code data-no-translate>docs/telegram-mini-app-setup.md</code></p>
+      </section>
+    </aside>
+  </div>
+  <div class="poster" aria-hidden="true"><h1 x-text="poster.heading"></h1><p data-ui-text x-text="poster.title"></p><div x-html="Clinic.qrSvg(poster.link,420)"></div><p x-text="poster.km"></p><p class="mono" style="font-size:10pt" x-text="poster.link"></p></div>
+</main>
+</body>
+</html>

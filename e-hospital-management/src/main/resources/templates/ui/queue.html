@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{ui/fragments/clinic :: head('Queue')}"></head>
+<body class="clinic-page" x-data="queueBoard()">
+<script th:inline="javascript">window.QUEUE={role:/*[[${role}]]*/ '',doctor:/*[[${doctorId}]]*/ ''};</script>
+<script defer src="/ui/queue.js"></script><script defer src="/ui/vendor/alpine.js"></script>
+<header th:replace="~{ui/fragments/clinic :: top('queue')}"></header>
+<main class="clinic-shell">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+    <div><h1 style="font-size:26px;font-weight:700;margin:0"><span data-ui-text x-text="role==='Doctor'?'My Queue':'Queue'"></span> · <span data-ui-text x-text="station"></span></h1><p class="muted" style="margin:2px 0 0">Updates every 15 seconds · Queue completion is not visit completion.</p></div>
+    <button class="btn btn-primary" style="min-height:46px;font-size:16px" @click="callNext()" :disabled="busy || !waiting.length">📣 <span>Call Next</span></button>
+  </div>
+  <div class="alert-box error" role="alert" x-show="error" x-text="error" x-cloak></div>
+  <div class="alert-box ok" role="status" x-show="message" x-text="message" x-cloak></div>
+
+  <div class="clinic-card" style="display:grid;gap:12px">
+    <div class="chip-row" role="tablist" aria-label="Station">
+      <template x-for="s in stations"><button role="tab" :class="{active:station===s}" :aria-selected="station===s" @click="station=s" data-ui-text x-text="s"></button></template>
+    </div>
+    <div class="filters">
+      <input type="search" x-model="search" placeholder="Search patient or ticket" aria-label="Search queue">
+      <select x-model="doctor" aria-label="Doctor filter" x-show="role!=='Doctor'"><option value="">All doctors</option><template x-for="d in data.doctors||[]"><option data-no-translate :value="d.id" x-text="d.name"></option></template></select>
+      <select x-model="priority" aria-label="Priority filter"><option value="">All priorities</option><option>Emergency</option><option>Urgent</option><option>Normal</option></select>
+      <div class="counts"><template x-for="c in counts"><span class="pill" :class="'pill-'+Clinic.tone(c[0])"><span data-ui-text x-text="c[0]"></span> <strong x-text="c[1]"></strong></span></template></div>
+    </div>
+  </div>
+
+  <div class="queue-board">
+    <!-- Now serving -->
+    <section class="clinic-card now-serving" aria-live="polite">
+      <h2>Now serving</h2>
+      <template x-if="current">
+        <div style="display:grid;gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span class="ticket-big" x-text="current.name"></span><span class="pill" :class="'pill-'+Clinic.tone(current.status)" data-ui-text x-text="current.status"></span></div>
+          <div><strong data-no-translate style="font-size:18px" x-text="current.patientLabel"></strong><div class="muted small"><span data-no-translate x-text="current.visitReason||'—'"></span> · <span data-no-translate x-text="current.doctorLabel"></span></div></div>
+          <div class="patient-meta"><span class="pill" :class="'pill-'+Clinic.tone(current.priority)" data-ui-text x-text="current.priority"></span><span x-show="current.calledAt"><span>Called</span> <span x-text="Clinic.minutes(current.calledAt)"></span></span><span x-show="current.appointmentTime"><span>Appointment</span> <span x-text="current.appointmentTime"></span></span></div>
+          <div class="action-grid">
+            <button class="btn btn-primary" x-show="canConsult && current.status==='Called' && isConsult(current)" @click="start(current)" :disabled="busy">Start Consultation</button>
+            <button class="btn btn-primary" x-show="current.status==='Called' && !isConsult(current)" @click="setStatus(current,'In service')" :disabled="busy">Start Service</button>
+            <a class="btn btn-white" x-show="current.status==='In service' && canChart" :href="chart(current)">Open Workspace</a>
+            <button class="btn btn-primary" x-show="current.status==='In service'" @click="setStatus(current,'Completed')" :disabled="busy">Complete Step</button>
+            <button class="btn btn-white" x-show="current.status==='Called'" @click="setStatus(current,'Waiting','Moved to the end of the queue.')" :disabled="busy">Skip</button>
+            <button class="btn btn-white" @click="setStatus(current,'On hold')" :disabled="busy">Hold</button>
+            <button class="btn btn-white danger-text" x-show="current.status==='Called'" @click="setStatus(current,'Missed')" :disabled="busy">Mark Missed</button>
+            <button class="btn btn-white" x-show="canTransfer" @click="openTransfer(current)" :disabled="busy">Transfer</button>
+          </div>
+        </div>
+      </template>
+      <div class="empty" x-show="!current">No patient is being served. Use Call Next.</div>
+      <h3>Up next</h3>
+      <template x-if="waiting[0]"><div class="record-row"><div><strong class="mono" x-text="waiting[0].name"></strong> <span data-no-translate x-text="waiting[0].patientLabel"></span><small x-text="Clinic.minutes(waiting[0].queuedAt)"></small></div><span class="pill" :class="'pill-'+Clinic.tone(waiting[0].priority)" data-ui-text x-text="waiting[0].priority"></span></div></template>
+      <div class="empty" x-show="!waiting.length">Nobody is waiting.</div>
+    </section>
+
+    <!-- Waiting list -->
+    <section class="clinic-card">
+      <div style="display:flex;justify-content:space-between;align-items:center"><h2><span>Waiting</span> · <span x-text="waiting.length"></span></h2></div>
+      <div role="list">
+        <template x-for="(q,i) in [...waiting,...held]" :key="q.id">
+          <div class="queue-row" role="listitem">
+            <div><div class="num" x-text="q.name"></div><small class="muted">#<span x-text="q.status==='Waiting'?i+1:'—'"></span></small></div>
+            <div class="who"><strong data-no-translate x-text="q.patientLabel"></strong><small><span data-no-translate x-text="q.visitReason||'—'"></span> · <span data-no-translate x-text="q.doctorLabel"></span> · <span data-ui-text x-text="q.station||'Consultation'"></span></small>
+              <div class="patient-meta"><span class="pill" :class="'pill-'+Clinic.tone(q.priority)" data-ui-text x-text="q.priority"></span><span class="pill" :class="'pill-'+Clinic.tone(q.status)" data-ui-text x-text="q.status"></span><span><span>Waiting</span> <span x-text="Clinic.minutes(q.queuedAt)"></span></span><span x-show="q.appointmentTime"><span>Appointment</span> <span x-text="q.appointmentTime"></span></span></div></div>
+            <div class="acts">
+              <button class="btn btn-white btn-sm" x-show="q.status==='Waiting'" @click="setStatus(q,'Called')" :disabled="busy">Call</button>
+              <button class="btn btn-white btn-sm" x-show="q.status==='Waiting'" @click="setStatus(q,'On hold')" :disabled="busy">Hold</button>
+              <button class="btn btn-white btn-sm" x-show="q.status==='On hold'" @click="setStatus(q,'Waiting')" :disabled="busy">Resume</button>
+              <button class="btn btn-white btn-sm" x-show="canTransfer" @click="openTransfer(q)" :disabled="busy">Transfer</button>
+              <a class="btn btn-white btn-sm" x-show="q.appointment || appointmentOf(q)" :href="'/care/appointments/'+(appointmentOf(q))">Details</a>
+            </div>
+          </div>
+        </template>
+      </div>
+      <div class="empty" x-show="!waiting.length && !held.length">Nobody is waiting at this station.</div>
+      <details style="margin-top:14px"><summary class="muted" style="cursor:pointer"><span>Queue history today</span> (<span x-text="finished.length"></span>)</summary>
+        <template x-for="q in finished" :key="q.id"><div class="record-row"><div><strong class="mono" x-text="q.name"></strong> <span data-no-translate x-text="q.patientLabel"></span><small><span data-ui-text x-text="q.station||'Consultation'"></span> · <span data-no-translate x-text="q.doctorLabel"></span></small></div><span class="pill" :class="'pill-'+Clinic.tone(q.status)" data-ui-text x-text="q.status"></span></div></template>
+      </details>
+    </section>
+  </div>
+
+  <!-- Transfer dialog -->
+  <div class="dialog-backdrop" x-show="transfer.q" x-cloak @keydown.escape.window="transfer.q=null" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;z-index:50">
+    <form class="clinic-card" style="width:min(440px,92vw);display:grid;gap:12px" @submit.prevent="doTransfer()" role="dialog" aria-modal="true" aria-labelledby="transfer-title">
+      <h2 id="transfer-title"><span>Transfer</span> <span x-text="transfer.q?.name"></span></h2>
+      <p class="muted small">The patient keeps the same visit and moves to the next station's queue.</p>
+      <div class="form-row"><label for="tr-station">Next station</label><select id="tr-station" x-model="transfer.station"><template x-for="s in ['Consultation','Triage','Laboratory','Imaging','Pharmacy','Payment','Doctor review']"><option :value="s" data-ui-text x-text="s"></option></template></select></div>
+      <div class="form-row"><label for="tr-doctor">Receiving doctor</label><select id="tr-doctor" x-model="transfer.doctor"><template x-for="d in data.doctors||[]"><option data-no-translate :value="d.id" x-text="d.name"></option></template></select></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn btn-white" @click="transfer.q=null">Cancel</button><button class="btn btn-primary" :disabled="busy">Transfer patient</button></div>
+    </form>
+  </div>
+</main>
+</body>
+</html>

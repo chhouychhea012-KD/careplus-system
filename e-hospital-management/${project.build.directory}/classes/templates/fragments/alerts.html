@@ -1,0 +1,4 @@
+<!doctype html><html xmlns:th="http://www.thymeleaf.org"><body>
+<div th:fragment="alerts"><div class="alert alert-success" role="status" th:if="${success}" th:text="${success}"></div></div>
+<div th:fragment="formErrors" class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}"><strong>Please review your information.</strong><ul class="mb-0"><li th:each="message : ${#fields.allErrors()}" th:text="${message}"></li></ul></div>
+</body></html>

@@ -1,0 +1,3 @@
+const fs=require('fs');const path=require('path');const dest=path.join(__dirname,'../src/main/resources/static/ui/vendor');fs.mkdirSync(dest,{recursive:true});
+for(const [from,to] of [['alpinejs/dist/cdn.min.js','alpine.js'],['lucide/dist/umd/lucide.min.js','lucide.js'],['chart.js/dist/chart.umd.js','chart.js'],['qrcode-generator/qrcode.js','qrcode.js'],['jsqr/dist/jsQR.js','jsqr.js'],['jsqr/LICENSE','jsqr-LICENSE.txt']]){fs.copyFileSync(path.join(__dirname,'../node_modules',from),path.join(dest,to));}
+console.log('Vendored Alpine.js, Lucide, Chart.js, qrcode-generator and jsQR for offline runtime.');

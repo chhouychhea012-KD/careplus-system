@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="page(title, active, content)">
+<head th:replace="~{fragments/head :: head(${title})}"></head><body>
+<a class="skip-link" href="#main">Skip to content</a>
+<aside class="sidebar" id="sidebar" aria-label="Hospital navigation">
+<a class="brand" th:href="@{/}"><img th:src="@{/css/logo.svg}" width="40" height="40" alt=""><span>CareBridge<small>HOSPITAL MANAGEMENT</small></span></a>
+<p class="nav-label">WORKSPACE</p><nav aria-label="Main navigation">
+<a th:href="@{/}" th:classappend="${active == 'overview'} ? 'selected'" th:attr="aria-current=${active == 'overview' ? 'page' : null}"><span aria-hidden="true">▦</span> Overview</a>
+<a th:href="@{/profile}" th:classappend="${active == 'profile'} ? 'selected'"><span aria-hidden="true">◉</span> My profile</a>
+<th:block th:if="${administrator}"><p class="nav-label">ADMINISTRATION</p>
+<a th:href="@{/admin/users}" th:classappend="${active == 'users'} ? 'selected'"><span aria-hidden="true">♙</span> Staff accounts</a>
+<a th:href="@{/admin/audit}" th:classappend="${active == 'audit'} ? 'selected'"><span aria-hidden="true">≡</span> Audit history</a></th:block>
+<a th:href="@{/help}" th:classappend="${active == 'help'} ? 'selected'"><span aria-hidden="true">?</span> Help &amp; guidance</a></nav>
+<div class="sidebar-note"><span class="status-dot"></span> Secure staff workspace<p>Care for your patients.<br>Protect their information.</p></div>
+<form method="post" th:action="@{/logout}"><button class="btn btn-outline-secondary w-100" type="submit">Sign out securely</button></form>
+</aside>
+<div class="workspace"><header class="topbar">
+<button class="menu-toggle btn btn-light" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">☰</button>
+<nav aria-label="Breadcrumb"><ol class="breadcrumb mb-0"><li class="breadcrumb-item"><a th:href="@{/}">Workspace</a></li><li class="breadcrumb-item active" aria-current="page" th:text="${title}"></li></ol></nav>
+<details class="account-menu"><summary><span class="avatar" aria-hidden="true">+</span><span th:text="${currentUsername}"></span><span aria-hidden="true">⌄</span></summary><div class="account-popover"><a th:href="@{/profile}">My profile</a><a th:href="@{/profile/password}">Change password</a><form method="post" th:action="@{/logout}"><button type="submit">Sign out</button></form></div></details>
+</header><main id="main"><div th:replace="~{fragments/alerts :: alerts}"></div><th:block th:replace="${content}"></th:block></main>
+<footer><span>CareBridge · E-Hospital Management System</span><span>University Software Engineering Project</span></footer></div>
+</body></html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{ui/fragments/clinic :: head('Check-In Desk')}"></head>
+<body class="clinic-page" x-data="checkinDesk()">
+<script th:inline="javascript">window.DESK={role:/*[[${role}]]*/ ''};</script>
+<script defer src="/ui/vendor/qrcode.js"></script><script defer src="/ui/vendor/jsqr.js"></script><script defer src="/ui/checkin.js"></script><script defer src="/ui/vendor/alpine.js"></script>
+<header th:replace="~{ui/fragments/clinic :: top('checkin')}"></header>
+<main class="clinic-shell">
+  <div><h1 style="font-size:26px;font-weight:700;margin:0">Check-In Desk</h1><p class="muted" style="margin:2px 0 0">Scan the patient's appointment QR, or check in from today's list. Each code works once.</p></div>
+  <div class="alert-box error" role="alert" x-show="error" x-text="error" x-cloak></div>
+  <section class="clinic-card" x-show="result" x-cloak style="border-color:var(--success)">
+    <h2>Checked in</h2>
+    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><span class="ticket-big" x-text="result?.queueNumber"></span><div><strong data-no-translate x-text="result?.patientLabel"></strong><div class="muted small"><span x-text="result?.id"></span> · <span data-no-translate x-text="result?.doctorLabel"></span></div></div>
+      <a class="btn btn-primary" :href="'/care/appointments/'+(result?.appointment||'')" x-show="result?.appointment">Open Appointment</a><button class="btn btn-white" @click="result=null">Next patient</button></div>
+  </section>
+  <div class="two-col">
+    <div style="display:grid;gap:16px">
+      <section class="clinic-card">
+        <h2>Scan appointment QR</h2>
+        <div style="display:grid;grid-template-columns:minmax(0,360px) 1fr;gap:16px;align-items:start" class="scan-layout">
+          <div><div class="scanner" x-show="scanning"><video x-ref="video" muted></video></div><div class="empty" x-show="!scanning">Camera is off.</div>
+            <div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-primary" x-show="!scanning" @click="startScan()">Start camera</button><button class="btn btn-white" x-show="scanning" @click="stopScan()">Stop camera</button></div></div>
+          <form @submit.prevent="submitCode()" style="display:grid;gap:10px">
+            <div class="form-row"><label for="manual-code">Or type the code</label><input id="manual-code" class="mono" x-model="code" placeholder="CPCI:… or code from the patient's phone" autocomplete="off" required></div>
+            <button class="btn btn-primary" :disabled="busy">Check in</button>
+            <p class="muted small">Patients who cannot use QR codes are checked in from today's list or by name search in Appointments.</p>
+          </form>
+        </div>
+      </section>
+      <section class="clinic-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h2><span>Expected today</span> · <span x-text="expected.length"></span></h2><input type="search" x-model="search" placeholder="Search patient" aria-label="Search expected patients" style="min-height:38px;border-radius:10px;border:1px solid var(--border);padding:0 10px"></div>
+        <template x-for="a in expectedFiltered" :key="a.id"><div class="record-row" style="align-items:center"><div><strong data-no-translate x-text="a.patientLabel"></strong><small><span x-text="a.time"></span> · <span data-no-translate x-text="a.doctorLabel"></span> · <span data-no-translate x-text="a.departmentLabel"></span></small></div>
+          <div style="display:flex;gap:6px"><a class="btn btn-white btn-sm" :href="'/care/appointments/'+a.id">Details</a><button class="btn btn-primary btn-sm" @click="checkin(a)" :disabled="busy">Check In</button></div></div></template>
+        <div class="empty" x-show="!expectedFiltered.length">No more patients expected today.</div>
+      </section>
+      <section class="clinic-card">
+        <h2>Check-in history</h2>
+        <template x-for="c in history" :key="c.time+c.appointment"><div class="record-row"><div><strong data-ui-text x-text="c.method"></strong><small x-text="c.time.replace('T',' ')+' · '+c.actor"></small></div><a class="mono small" :href="'/care/appointments/'+c.appointment" x-text="c.appointment"></a></div></template>
+        <div class="empty" x-show="!history.length">No check-ins yet today.</div>
+      </section>
+    </div>
+    <aside style="display:grid;gap:16px">
+      <section class="clinic-card" x-show="canPoster">
+        <h2>Hospital arrival QR</h2>
+        <p class="muted small">Patients scan this poster with their phone to check themselves in. The code changes every day; rotate it if a photo is shared.</p>
+        <div class="qr-box" x-html="Clinic.qrSvg(arrivalLink,220)"></div>
+        <p class="mono small" style="word-break:break-all" x-text="arrivalLink"></p>
+        <p class="small"><span>Code</span>: <strong class="mono" x-text="arrival.code"></strong> · <span>Valid on</span> <span x-text="arrival.validOn"></span></p>
+        <div class="demo-banner" x-show="links.kind==='demo'">Demo link: Telegram is not configured, so this QR opens the local web preview.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-white" @click="printPoster()">Print poster</button><button class="btn btn-white" @click="rotate()" :disabled="busy">Rotate code</button></div>
+      </section>
+      <section class="clinic-card" x-show="canPoster">
+        <h2>Link a patient's Telegram</h2>
+        <p class="muted small">Check the patient's identity first. The one-time code expires in 10 minutes.</p>
+        <div class="form-row"><label for="link-patient">Patient</label><select id="link-patient" x-model="linkPatient"><option value="">Select a patient</option><template x-for="p in patients"><option data-no-translate :value="p.id" x-text="p.name+' · '+p.id"></option></template></select></div>
+        <button class="btn btn-primary" style="margin-top:8px" @click="linkCode()" :disabled="busy||!linkPatient">Create link code</button>
+        <div x-show="link.code" x-cloak style="margin-top:10px"><div class="link-code mono" x-text="link.code"></div><p class="muted small"><span>Expires</span> <span x-text="(link.expires||'').replace('T',' ').slice(0,16)"></span> <span data-no-translate>UTC</span></p></div>
+      </section>
+    </aside>
+  </div>
+  <div class="poster" aria-hidden="true"><h1>CarePlus General Hospital</h1><p>Arrived for your appointment? Scan to check in.</p><div x-html="Clinic.qrSvg(arrivalLink,420)"></div><p>មកដល់សម្រាប់ការណាត់ជួប? ស្កេនដើម្បីបញ្ជាក់ការមកដល់។</p><p class="mono" x-text="'Code: '+arrival.code+' · '+arrival.validOn"></p></div>
+</main>
+</body>
+</html>

@@ -1,0 +1,6 @@
+<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="page(title, content)">
+<head th:replace="~{fragments/head :: head(${title})}"></head><body class="public-page"><a class="skip-link" href="#main">Skip to content</a>
+<main id="main" class="public-shell"><section class="public-intro"><a class="brand light" th:href="@{/login}"><img th:src="@{/css/logo.svg}" width="44" height="44" alt=""><span>CareBridge<small>HOSPITAL MANAGEMENT</small></span></a>
+<div><p class="eyebrow">CONNECTED CARE. CLEARER WORKFLOWS.</p><h1>A better day<br>starts with care.</h1><p>A secure workspace for the people<br>who care for others.</p><div class="intro-cross" aria-hidden="true">+</div></div><p class="privacy-note">Authorized hospital staff only. Keep your credentials private.</p></section>
+<section class="public-form"><th:block th:replace="${content}"></th:block></section></main>
+</body></html>

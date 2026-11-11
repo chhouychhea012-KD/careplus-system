@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{ui/fragments/clinic :: head('Open CarePlus')}"></head>
+<body class="clinic-page" x-data="telegramEntry()">
+<script th:inline="javascript">window.TGENTRY={configured:/*[[${configured}]]*/ false,mode:/*[[${appMode}]]*/ 'demo'};</script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script defer src="/ui/tg.js"></script><script defer src="/ui/vendor/alpine.js"></script>
+<header class="mini-head"><span class="clinic-brand">care<strong>plus</strong></span><div data-preference-controls></div></header>
+<main class="mini2" style="padding-bottom:32px">
+  <section class="mini-card" x-show="state==='loading'"><h1>Opening CarePlus…</h1><p class="muted">Checking your Telegram sign-in with the hospital server.</p></section>
+  <section class="mini-card" x-show="state==='link'" x-cloak>
+    <h1>Link your hospital account</h1>
+    <p><span>Hello</span> <strong data-no-translate x-text="firstName"></strong></p><p>Telegram confirmed your identity. To protect medical records, enter the one-time code from the hospital desk.</p>
+    <form @submit.prevent="link()" style="display:grid;gap:10px">
+      <div class="form-row"><label for="code">Link code</label><input id="code" class="mono" x-model="code" placeholder="ABCD-2345" autocomplete="one-time-code" autocapitalize="characters" required></div>
+      <button class="btn btn-primary btn-block" :disabled="busy">Link account</button>
+    </form>
+    <p class="muted small">Patients get the code at reception after showing identification. Doctors get it from a hospital administrator. Scanning a QR code alone never gives access.</p>
+  </section>
+  <section class="mini-card" x-show="state==='demo'" x-cloak>
+    <h1>Telegram is not connected</h1>
+    <p>This QR code opened the CarePlus demo. Live Telegram sign-in needs a configured bot, a public HTTPS address and server verification, so it is unavailable here.</p>
+    <div class="demo-banner" x-show="arrival">Arrival code: <strong class="mono" x-text="arrival"></strong></div>
+    <a class="btn btn-primary btn-block" :href="demoLink">Open the demo preview</a>
+    <p class="muted small">The preview uses synthetic identities only.</p>
+  </section>
+  <section class="mini-card" x-show="state==='error'" x-cloak>
+    <h1>Could not open CarePlus</h1><p class="alert-box error" x-text="error"></p>
+    <button class="btn btn-white btn-block" @click="begin()">Try again</button>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/public :: page('Sign in', ~{::section})}"><body><section>
+<p class="eyebrow">WELCOME BACK</p><h2>Sign in to your workspace</h2><p class="text-secondary">Use your hospital staff account to continue.</p>
+<div class="alert alert-danger" role="alert" th:if="${param.error}">Unable to sign in. Check your credentials or wait 15 minutes after repeated attempts.</div>
+<div class="alert alert-info" role="status" th:if="${param.expired}">Your session ended. Sign in again to continue.</div>
+<div class="alert alert-success" role="status" th:if="${param.logout}">You have signed out securely.</div>
+<div class="alert alert-success" role="status" th:if="${param.changed != null or param.reset != null}">Your password has been updated. Sign in with your new password.</div>
+<form method="post" th:action="@{/login}"><label for="username" class="form-label">Username <span aria-hidden="true">*</span></label><input class="form-control" id="username" name="username" autocomplete="username" maxlength="100" required autofocus>
+<label for="password" class="form-label">Password <span aria-hidden="true">*</span></label><input class="form-control" id="password" name="password" type="password" autocomplete="current-password" maxlength="72" required>
+<div class="form-help-row"><span>All fields are required</span><a th:href="@{/forgot-password}">Forgot password?</a></div><button class="btn btn-primary w-100" type="submit">Sign in securely <span aria-hidden="true">→</span></button></form>
+<p class="form-hint mt-4">Need an account? Contact your hospital administrator.</p>
+</section></body></html>

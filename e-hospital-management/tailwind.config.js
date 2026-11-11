@@ -1,0 +1,1 @@
+module.exports = {content:['./src/main/resources/templates/ui/**/*.html','./src/main/resources/static/ui/*.js'],theme:{extend:{colors:{primary:{50:'#effaf7',100:'#d7f2e9',500:'#149b80',600:'#10836d',700:'#116653'},secondary:'#e8f7fb'},fontFamily:{sans:['Inter','Segoe UI','sans-serif']}}},plugins:[]};

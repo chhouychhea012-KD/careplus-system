@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="_csrf" th:content="${_csrf.token}"><meta name="_csrf_header" th:content="${_csrf.headerName}">
+  <title th:text="${title}+' · CarePlus'">CarePlus</title>
+  <link rel="icon" href="/ui/favicon.svg">
+  <link rel="stylesheet" href="/ui/tailwind.css"><link rel="stylesheet" href="/ui/app.css"><link rel="stylesheet" href="/ui/care.css"><link rel="stylesheet" href="/ui/clinic.css">
+  <script defer src="/ui/i18n.js"></script><script defer src="/ui/clinic.js"></script>
+</head>
+<body>
+<!-- Shared top bar for the clinical pages. Links are role-aware; the server still enforces every permission. -->
+<header th:fragment="top(current)" class="care-top clinic-top">
+  <a href="/" class="clinic-brand" aria-label="CarePlus home">care<strong>plus</strong></a>
+  <nav aria-label="Clinical navigation" class="clinic-nav">
+    <a href="/care/queue" th:classappend="${current=='queue'}?'active'">My Queue</a>
+    <a href="/appointments" th:classappend="${current=='appointments'}?'active'">Appointments</a>
+    <a href="/care/checkin" th:if="${role=='Receptionist' or role=='Nurse' or role=='Administrator' or role=='Hospital Administrator'}" th:classappend="${current=='checkin'}?'active'">Check-In Desk</a>
+    <a href="/patients" th:if="${role!='Receptionist'}">Patients</a>
+    <a href="/settings/telegram" th:if="${role=='Administrator' or role=='Hospital Administrator'}" th:classappend="${current=='telegram'}?'active'">Telegram Mini App</a>
+    <a href="/mini/doctor" th:if="${role=='Doctor' or role=='Administrator' or role=='Hospital Administrator'}">Doctor Mini App</a>
+  </nav>
+  <div data-preference-controls></div>
+</header>
+</body>
+</html>
