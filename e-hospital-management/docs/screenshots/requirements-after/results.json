@@ -1,0 +1,262 @@
+{
+  "checks": [
+    {
+      "page": "dashboard",
+      "label": "desktop",
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "appointment",
+      "label": "desktop",
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "workspace",
+      "label": "desktop",
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "queue",
+      "label": "desktop",
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "telegram",
+      "label": "desktop",
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "doctor-mini",
+      "label": "desktop",
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "schedules",
+      "label": "desktop",
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "patient-mini",
+      "label": "desktop",
+      "width": 1440,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "dashboard",
+      "label": "tablet",
+      "width": 768,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "appointment",
+      "label": "tablet",
+      "width": 768,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "workspace",
+      "label": "tablet",
+      "width": 768,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "queue",
+      "label": "tablet",
+      "width": 768,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "telegram",
+      "label": "tablet",
+      "width": 768,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "doctor-mini",
+      "label": "tablet",
+      "width": 768,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "schedules",
+      "label": "tablet",
+      "width": 768,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "patient-mini",
+      "label": "tablet",
+      "width": 768,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "dashboard",
+      "label": "mobile",
+      "width": 390,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "appointment",
+      "label": "mobile",
+      "width": 390,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "workspace",
+      "label": "mobile",
+      "width": 390,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "queue",
+      "label": "mobile",
+      "width": 390,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "telegram",
+      "label": "mobile",
+      "width": 390,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "doctor-mini",
+      "label": "mobile",
+      "width": 390,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "schedules",
+      "label": "mobile",
+      "width": 390,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "patient-mini",
+      "label": "mobile",
+      "width": 390,
+      "lang": "km",
+      "theme": "dark",
+      "overflow": false
+    },
+    {
+      "page": "dashboard",
+      "label": "phone",
+      "width": 360,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "appointment",
+      "label": "phone",
+      "width": 360,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "workspace",
+      "label": "phone",
+      "width": 360,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "queue",
+      "label": "phone",
+      "width": 360,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "telegram",
+      "label": "phone",
+      "width": 360,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "doctor-mini",
+      "label": "phone",
+      "width": 360,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "schedules",
+      "label": "phone",
+      "width": 360,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    },
+    {
+      "page": "patient-mini",
+      "label": "phone",
+      "width": 360,
+      "lang": "en",
+      "theme": "light",
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "failures": []
+}

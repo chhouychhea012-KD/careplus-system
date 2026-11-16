@@ -1,0 +1,21 @@
+<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{ui/fragments/clinic :: head('Doctor schedules')}"></head>
+<body class="clinic-page" x-data="doctorSchedules()">
+<script th:inline="javascript">window.SCHEDULE={role:/*[[${role}]]*/ '',doctor:/*[[${doctorId}]]*/ ''};</script>
+<script defer src="/ui/schedules.js"></script><script defer src="/ui/vendor/alpine.js"></script>
+<div class="shell" x-data="shellState()" :class="{'sidebar-compact':compact,'nav-open':mobileNav}"><div class="mobile-nav-backdrop" x-cloak x-show="mobileNav" @click="mobileNav=false"></div><aside th:replace="~{ui/fragments/shell :: sidebar}"></aside><div class="app-main"><header th:replace="~{ui/fragments/shell :: topbar('Doctors','Doctor schedules')}"></header>
+<main class="page2"><div class="page2-head"><div><p class="eyebrow2">Care team availability</p><h1>Doctor schedules</h1><p class="muted">Plan dated availability, breaks and locations. Existing bookings are protected.</p></div></div>
+<div class="notice">Synthetic demo only. Clinician review is required. Changes reset when the server restarts.</div>
+<div class="alert-box error" role="alert" x-cloak x-show="error" x-text="error"></div><div class="alert-box ok" role="status" x-cloak x-show="message" x-text="message"></div>
+<section class="card2"><div class="filters2"><label for="schedule-doctor">Doctor</label><select id="schedule-doctor" x-model="doctor" @change="load()" :disabled="role==='Doctor'||busy"><template x-for="d in doctors" :key="d.id"><option :value="d.id" x-text="d.name" data-no-translate></option></template></select><label for="schedule-date">Schedule date</label><input id="schedule-date" type="date" x-model="date" @change="load()" :disabled="busy"></div></section>
+<div class="grid2">
+ <form class="card2" @submit.prevent="save()"><div class="card2-head"><h2>Session availability</h2><span class="badge2" data-ui-text x-text="editable?'Administrator':'Read-only'"></span></div>
+  <fieldset :disabled="!editable||busy" class="schedule-fields">
+   <label class="schedule-closed"><input type="checkbox" x-model="closed"> <span>Unavailable on this date</span></label>
+   <div class="form-grid"><label for="schedule-start">Start time<input id="schedule-start" type="time" x-model="form.startTime" required></label><label for="schedule-end">End time<input id="schedule-end" type="time" x-model="form.endTime" required></label><label for="schedule-break-start">Break starts<input id="schedule-break-start" type="time" x-model="form.breakStart"></label><label for="schedule-break-end">Break ends<input id="schedule-break-end" type="time" x-model="form.breakEnd"></label><label for="schedule-interval">Slot length (minutes)<input id="schedule-interval" type="number" min="5" max="60" step="5" x-model="form.interval" required></label><label for="schedule-location">Consultation location<input id="schedule-location" x-model="form.location" maxlength="100" required></label></div>
+  </fieldset>
+  <p class="muted small" x-show="!editable">Only administrators can change doctor schedules.</p>
+  <button class="btn2 btn2-primary" type="submit" x-show="editable" :disabled="busy">Save schedule</button>
+ </form>
+ <section class="card2"><div class="card2-head"><h2>Available appointment slots</h2><span class="badge2" x-text="slots.length"></span></div><p class="muted" data-no-translate x-text="form.doctorLabel+' · '+date+' · '+form.location"></p><p class="muted small">These slots are shared by reception and the patient Mini App.</p><div class="schedule-slots"><template x-for="slot in slots" :key="slot"><span class="badge2 tone2-teal" x-text="slot"></span></template></div><div class="empty2" x-show="!slots.length"><p>No available slots for this date.</p></div><a class="btn2 btn2-secondary" x-show="role!=='Hospital Director'" :href="'/appointments?doctor='+doctor">View appointments</a></section>
+</div></main></div></div></body></html>

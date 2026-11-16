@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{ui/fragments/clinic :: head('Tasks')}"></head>
+<body class="clinic-page" x-data="taskList()">
+<script th:inline="javascript">window.DOCS={role:/*[[${role}]]*/ '',doctor:/*[[${doctorId}]]*/ ''};</script>
+<script defer src="/ui/documents.js"></script><script defer src="/ui/vendor/alpine.js"></script>
+<div class="shell" x-data="shellState()" :class="{'sidebar-compact':compact,'nav-open':mobileNav}"><div class="mobile-nav-backdrop" x-cloak x-show="mobileNav" @click="mobileNav=false"></div>
+<aside th:replace="~{ui/fragments/shell :: sidebar}"></aside><div class="app-main">
+<header th:replace="~{ui/fragments/shell :: topbar('Clinical work','Tasks')}"></header>
+<main class="page2" id="main-content">
+  <div class="page2-head"><div><h1>Tasks</h1><p class="muted">Clinical notes to write or sign, results to review and certificates to issue. Each task opens the right encounter.</p></div></div>
+  <div class="alert-box error" role="alert" x-show="error" x-text="error" x-cloak></div>
+  <div class="chips2"><template x-for="[k,label] in kinds" :key="k"><button type="button" class="chip2" :class="{on:kind===k}" @click="kind=k"><span data-ui-text x-text="label"></span> <strong x-text="countOf(k)"></strong></button></template></div>
+  <section class="card2">
+    <ul class="list2" x-show="filtered.length"><template x-for="(t,i) in filtered" :key="i"><li><a :href="t.href"><span class="list2-main"><strong x-text="t.title" data-no-translate></strong><small x-text="t.detail" data-no-translate></small></span><span class="badge2" :class="'tone2-'+Clinic.tone(t.status)" data-ui-text x-text="t.status"></span><i data-lucide="chevron-right"></i></a></li></template></ul>
+    <div class="empty2" x-show="!loading && !filtered.length"><i data-lucide="circle-check"></i><p>Nothing needs your attention.</p></div>
+    <div class="empty2" x-show="loading"><p>Loading…</p></div>
+  </section>
+</main></div></div>
+</body>
+</html>

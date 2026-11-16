@@ -4,7 +4,8 @@ The existing Spring Boot / Thymeleaf / Tailwind / Alpine application now include
 
 ## Run locally
 
-**After receiving Java changes in `D:\ehospital-review`**, run `sync-java.cmd` once from this folder (Command Prompt). It verifies the SHA-256 of every staged Java file, copies them into `src\main\java\…\prototype` and `src\test\java\…\prototype`, verifies again and runs the tests. See [docs/upgrade-report.md](docs/upgrade-report.md).
+The requirements upgrade is implemented directly in this checkout. Start from these sources; no transfer-folder synchronization is needed. The complete PDF, gap analysis, traceability and verified results are under [docs/requirements-implementation-report.md](docs/requirements-implementation-report.md). Older `sync-java` instructions below describe historical deliveries and should not be used for this upgrade.
+
 
 Use JDK 26 (the current Maven target):
 
@@ -46,6 +47,6 @@ Browser tests require a running server and Playwright Chromium. Set `PLAYWRIGHT_
 
 Read [implementation report](docs/upgrade-report.md), [gap analysis](docs/upgrade-gap-analysis.md), and [existing modules guide](CAREPLUS.md). Earlier database instructions are preserved in [historical database documentation](docs/historical-database-readme.md); they do not describe the active application.
 
-Telegram `initData` signatures are verified server-side when `CAREPLUS_TELEGRAM_BOT_TOKEN` is set (never commit the token); account linking still fails closed. Noto Sans Khmer is bundled under `static/ui/fonts` so Khmer renders offline.
+Telegram `initData` signatures are verified server-side when `CAREPLUS_TELEGRAM_BOT_TOKEN` is set (never commit the token). Account linking requires a one-time hospital-issued code; linked roles cannot be changed by the browser. The bot command webhook is disabled by default. See [setup](docs/telegram-mini-app-setup.md). Noto Sans Khmer is bundled under `static/ui/fonts` so Khmer renders offline.
 
-Oracle, real hospital identity, bot credentials, Telegram account linking, PACS/DICOM, and external message/payment integrations are not connected. Live Telegram linking fails closed. Check-in currently uses an opaque, five-minute, single-use code; camera QR scanning is not implemented. Use synthetic information only.
+Oracle, real hospital identity, live bot credentials, PACS/DICOM, and external payment integrations are not connected. Telegram linking and bot commands are verified with synthetic server tests and local previews; real Telegram delivery and phone launch remain unverified. Check-in uses an opaque, five-minute, single-use ticket, camera QR scanning where supported, and a manual fallback. Physical camera permissions require device testing. Use synthetic information only.

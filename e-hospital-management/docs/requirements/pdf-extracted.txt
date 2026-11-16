@@ -1,0 +1,525 @@
+=== PAGE 1 ===
+E-Hospital Management | Client Requirements | Conceptual scope
+1
+HOSPITAL INFORMATION SYSTEM
+E-Hospital Management System
+Complete Client Requirements and UI/UX Acceptance Framework
+A hospital-director and practicing-doctor perspective on connected hospital operations, clinical workflows,
+patient safety, usability, and mobile access.
+Document profile
+Scope
+Hospital assumption
+Private general hospital with outpatient, emergency, inpatient, lab, imaging, pharmacy and billing
+services
+Users
+Clinical staff, operational staff, administrators and patients
+Languages
+English and Khmer
+User channels
+Hospital management web application and Telegram Mini Apps
+Delivery
+Phased functional requirements; clinical production readiness requires further review
+Prepared: 11 November 2026 | Version 1.0
+Note: This is a proposed client requirements baseline, not an attestation of the current codebase or an approved clinical
+specification.
+
+
+=== PAGE 2 ===
+E-Hospital Management | Client Requirements | Conceptual scope
+2
+1. Executive vision
+The hospital does not need a collection of unrelated CRUD pages. It needs one connected, safe, practical
+workflow in which staff can manage a patient from first contact through consultation, departmental care,
+payment, discharge and follow-up.
+Client success question: Can hospital staff complete a real patient journey quickly, accurately, and without
+confusion, while maintaining correct patient and encounter context?
+2. Assumed hospital profile
+Dimension
+Working assumption
+Institution
+Private general hospital, 24/7 urgent services and scheduled outpatient departments
+Departments
+General medicine, pediatrics, OB/GYN, surgery, emergency, laboratory, radiology, pharmacy,
+inpatient wards, billing and administration
+Channels
+Desktop web for hospital staff; Telegram Mini App for doctors and patients
+Localization
+Khmer and English, locally appropriate dates/times, print layouts
+Architecture approach
+Use existing Spring Boot + Thymeleaf + Tailwind codebase; in-memory prototype now, Oracle later
+3. Target patient journey
+1. Appointment booking or walk-in
+2. Registration and identity verification
+3. Arrival/check-in and encounter initiation
+4. Triage and prioritized department queue
+5. Doctor consultation and longitudinal medical chart
+6. Optional laboratory/imaging orders and result review
+7. Prescription/pharmacy and billing
+8. Discharge, admission, referral or follow-up
+Clinical exceptions are mandatory: emergency routing, doctor or department transfer, return-to-doctor after
+results, missed queue calls, optional steps, pending results, repeat visits, and admission. Do not force all
+patients through every stage.
+
+
+=== PAGE 3 ===
+E-Hospital Management | Client Requirements | Conceptual scope
+3
+4. User roles and scope
+Role
+Principal responsibilities
+Hospital director
+Hospital performance, revenue, operational risk, service availability
+Hospital administrator
+Departments, staff, roles, services, workflows and configuration
+Receptionist
+Patient search/registration, booking, check-in, queue tickets
+Nurse
+Triage, vital signs, nursing notes, escalations and handoffs
+Doctor
+Consultation, chart review, diagnosis, orders, prescription, certificate, follow-up
+Lab / radiology staff
+Worklists, specimens or procedures, reporting, verification/release
+Pharmacist
+Prescription review, dispensing, inventory and expiry
+Cashier
+Charge review, invoice, payment, refund/receipt
+Ward / emergency team
+Admissions, beds, emergency pathway, clinical handoffs
+Patient
+Booking, check-in, queue tracking and authorized released records
+IT administrator
+Access policy, audit, backups, monitoring and security
+5. Functional module requirements and priorities
+P0 = essential outpatient foundation; P1 = next operational release; P2 = advanced or hospital-dependent.
+These are proposed priorities, not promises that every module already exists.
+Module
+Required capability
+Priorit
+y
+01 Hospital Dashboard
+Role-specific task lists, activity, alerts and quick actions
+P0
+02 Patient Registry
+Unique identity, demographics, search, duplicate detection
+P0
+03 Appointments
+Booking, rescheduling, cancellation, calendars, doctor slots
+P0
+04 Reception/Check-In
+Walk-ins, arrivals, encounter creation, ticket issuance
+P0
+05 Queue Management
+Department queues, call, priority, hold, transfer, missed
+P0
+06 Triage/Nursing
+Vitals, complaints, priority, handoff, nurse notes
+P0
+07 Medical Records
+Longitudinal chart, allergies, medical history and documents
+P0
+08 Consultation/EMR
+Clinical documentation, diagnosis, orders and follow-up
+P0
+09 Laboratory
+Orders, collection, results, verification and release
+P0
+10 Imaging
+Orders, schedule, reports, review; PACS later
+P0
+11 Prescriptions
+Medication instructions, approval/review and statuses
+P0
+12 Pharmacy
+Dispensing, returns, batch, expiry and stock
+P0/P1
+13 Certificates
+Templates, review, issuance, PDF/print, history
+P0
+
+
+=== PAGE 4 ===
+E-Hospital Management | Client Requirements | Conceptual scope
+4
+Module
+Required capability
+Priorit
+y
+14 Billing/Cashier
+Encounter charges, invoice, payment, receipts
+P0
+15 Doctor Scheduling
+Schedules, locations, availability, leave, conflicts
+P0
+16 Staff/Access
+Users, roles, permissions, audit controls
+P0
+17 Patient Portal
+Booking, check-in, queue and released records
+P0/P1
+18 Notifications
+Appointment, queue and follow-up notifications
+P1
+19 Inpatient/Admission
+Admission, transfers, beds and discharge
+P1
+20 Ward Nursing
+Care plans, observations, administration records
+P1
+21 Emergency
+Urgent registration, triage, treatment, disposition
+P1
+22 Operating Theatre
+Surgery calendar, resources, perioperative documents
+P2
+23 Inventory/Procurement
+Supplier, PO, receipts, stock movement
+P1
+24 Insurance/Claims
+Coverage, preauthorization, payer billing
+P1
+25 Finance
+Revenue, outstanding balances, reconciliation
+P1
+26 Clinical Reports
+Operational performance and care turnaround
+P1
+27 Equipment
+Asset tracking, maintenance and downtime
+P2
+28 Infection Control
+Surveillance, clinical infection reporting
+P2
+29 Document Management
+Uploads, versioning, authorization and review
+P0
+30 Quality/Incident
+Safety incidents, complaints and corrective actions
+P1
+31 Multi-Branch
+Facilities, local configuration and staff assignment
+P2
+32 System Settings
+Localization, time zones, charges, forms, queue policy
+P0
+33 Security/Audit
+Access log, privacy controls, restore readiness
+P0
+34 Telegram Mobile
+Doctor tasks, patient booking and QR check-in
+P1
+6. High-priority clinical interface: Doctor Workspace
+A doctor must manage a single active encounter from one integrated workspace, opened from an appointment,
+doctor queue, or patient chart. The patient header and visit context should remain visible.
+6.1 Always-visible information
+ • Patient name and unique ID, age/sex, encounter and appointment numbers, department and assigned doctor.
+ • Allergies or critical alerts, queue number, current visit status and recent vitals.
+ • Previous relevant history without losing the active note or order draft.
+ 
+
+=== PAGE 5 ===
+E-Hospital Management | Client Requirements | Conceptual scope
+5
+6.2 Main workspace tabs
+Overview; Medical History; Triage and Vitals; Consultation; Clinical Notes; Diagnosis; Laboratory Orders;
+Imaging; Prescriptions; Medical Certificates; Documents; Encounter Timeline; Follow-Up and Discharge.
+6.3 Key doctor actions
+ • Start consultation; save draft; add note or diagnosis; order lab/imaging; review results; prescribe; create medical
+ certificate; arrange follow-up; complete visit.
+• Always prefill the correct patient/encounter; do not ask clinicians to search again for the same patient.
+ • Protect signed notes and reviewed clinical records from silent overwrites; display blockers before encounter
+ completion.
+7. Appointment details as the central visit entry point
+ • Display patient header, doctor, department, schedule, reason, appointment status and linked encounter.
+ • Show step progression: registration, check-in, triage, consultation, optional orders/results, completion. Derive
+ statuses from data rather than static UI.
+• Provide direct access to medical history, vitals, prior notes, results, prescriptions, certificates and follow-up.
+ • Offer context-appropriate quick actions; prevent invalid actions in incompatible states or for unauthorized roles.
+ 
+8. Queue management UX
+ • Use department and role-specific queues: registration, triage, consultation, lab, imaging, pharmacy and
+ payment.
+• Clearly show waiting, called, in service, on hold, transferred, completed, missed and cancelled states.
+ • Each row/card: queue number, patient identifier, arrival/wait time, priority, doctor, department, status and next
+ action.
+• Support call patient, call next, hold, resume, transfer, mark missed, start consultation and complete current
+ step.
+• Keep encounter open appropriately during transfers; a queue transfer is not necessarily a clinical discharge.
+ 
+9. Department-specific acceptance expectations
+Team
+What staff must demonstrate
+Reception
+Find existing patient, register only if needed, book or check in, issue ticket
+Nursing
+Record vitals, review chief complaint, assign documented priority, hand off to doctor
+Doctor
+Review chart while documenting, request tests, review result, prepare certificate and complete visit
+Laboratory
+Receive order, collect sample, process, record and release verified results
+Radiology
+Receive imaging order, schedule/perform study, author/release report
+Pharmacy
+Review authorized prescription, verify supply and record dispensing
+Billing
+Review encounter charges, create/review invoice, record authorized payment
+Inpatient
+Admission request, bed assignment, ward observations and discharge workflow
+
+
+=== PAGE 6 ===
+E-Hospital Management | Client Requirements | Conceptual scope
+6
+10. Usability and visual design acceptance
+Common weakness
+Required improvement
+Overloaded navigation
+Role-focused sidebar and quick tasks, not every module shown to every user
+Generic dashboards
+Actionable tasks, current work, status and alerts
+Disconnected appointment screen
+Direct patient encounter workspace and medical record access
+Unclear queue
+Current patient, waiting patients, clear priority and next action
+Too many forms/pages
+Unified consultation, prefilled patient/encounter context
+Disjointed orders/results
+Orders and result review within same encounter
+Hard certificate process
+Prefilled forms, draft, preview and clinician issue
+Inconsistent themes
+Semantic colors for all light/dark/system components
+Clipped Khmer text
+Locally bundled Khmer font, proper width/line height and localized labels
+Desktop squeezed on phone
+Dedicated mobile workflow with touch-sized actions
+Nonfunctional controls
+Implemented actions or visible explanation when unavailable
+11. Telegram Mini Apps and QR requirements
+Provide two mobile experiences, both sharing authorized patient and encounter data with the web system. A
+QR code opens the Mini App; a separate, scoped QR flow checks a patient in.
+11.1 Doctor Mini App
+ • Today's appointments, assigned queue, current patient, pending notes, results and follow-up tasks.
+ • Compact authorized patient summary, allergies, vitals, recent history and consultation actions.
+ • Authentication and staff-role checks before exposing medical information.
+ 
+11.2 Patient Mini App
+ • Book, view, reschedule or cancel appointments according to policy.
+ • View queue ticket and real status; patient arrival check-in using verified QR or code.
+ • Access only appropriately released medical documents and personal visit history.
+ 
+11.3 Two QR journeys
+QR type
+Purpose and protection
+Mini App launch QR
+Encode a configured Telegram Mini App/deep link; scanning opens Telegram, not privileged medical
+access
+Arrival/check-in QR
+Verify patient/appointment, use scoped expiring token, prevent duplicate check-in and replay; issue
+queue ticket only after verification
+Telegram integration requires a configured bot, HTTPS hosting, server-side validation of Telegram initialization
+data, secure account linking, role authorization and safe notification content. The demo may use synthetic
+identities but must clearly distinguish demo from production.
+
+
+=== PAGE 7 ===
+E-Hospital Management | Client Requirements | Conceptual scope
+7
+12. Core non-functional requirements
+ • Patient safety: positive identification, alert visibility, order status clarity, clinician review and correct record
+ selection.
+• Security: authenticated users, server-side permissions, encryption, least privilege and comprehensive audit.
+ • Reliability: backups, restore testing, monitoring, recovery and documented downtime processes.
+ • Data integrity: correct encounter relations; no orphaned queue tickets or silent loss of signed records.
+ • Accessibility: readable typography, keyboard support, sufficient contrast, responsive layouts and usability
+ testing.
+• Interoperability readiness: align core concepts with Patient, Encounter, ServiceRequest, Observation,
+ DiagnosticReport and MedicationRequest models; do not claim FHIR compliance without implementation.
+• Localization: Khmer/English, local date/time handling and print-ready documents.
+ 
+13. End-to-end acceptance scenarios
+Scenario
+Required demonstration
+New outpatient
+Register -> book -> check in -> triage -> queue -> consultation -> finish
+Returning patient
+Find existing chart -> create new encounter -> review history
+Lab pathway
+Order -> collect/process -> verify result -> doctor reviews
+Imaging pathway
+Order -> perform -> report released -> physician reviews
+Transfer
+Doctor A transfers -> Doctor B receives same active encounter
+Certificate
+Doctor opens encounter -> prefilled draft -> preview -> review/issue
+Prescription
+Doctor signs order -> pharmacist reviews -> dispenses
+Inpatient admission
+Admission request -> bed assigned -> ward care -> discharge
+Billing
+Services charged -> invoice reviewed -> payment -> receipt
+Patient mobile
+Scan launch QR -> authenticate -> book -> check in -> view queue
+Doctor mobile
+Authenticate -> my queue -> review patient -> act on tasks
+Localization/theme
+Perform critical workflows in Khmer/English and light/dark
+Each workflow also needs validation, failure-state handling, negative permission tests, data consistency checks
+and recovery behavior.
+
+
+=== PAGE 8 ===
+E-Hospital Management | Client Requirements | Conceptual scope
+8
+14. Phased implementation and approval gates
+Phase
+Scope
+Acceptance gate
+1 - OPD
+foundation
+Registration, appointment, check-in, queue, triage, doctor
+workspace, notes, orders/results, prescription, certificate, billing,
+follow-up
+One complete outpatient visit
+demonstrable with consistent IDs
+2 - Operations
+Pharmacy stock, procurement, staff schedules, reports, claims,
+notification and role dashboards
+Each team completes worklist and
+cross-department handoff
+3 - Expansion
+Admission, wards, emergency, surgery and related billing
+Distinct inpatient and emergency pathways
+work with same patient chart
+4 - Production
+integration
+Oracle, real auth, secure Telegram, external clinical systems,
+backups, monitoring, privacy
+Formal clinical, operational and security
+readiness reviews
+15. Proposed client sign-off checklist
+ • Hospital leadership confirms hospital type, department structure, operating hours and actual patient pathways.
+ • Clinical leads approve documentation, order, result release, prescribing and certificate policies.
+ • Reception, nursing, doctor, lab, imaging, pharmacy and cashier roles pass usability walkthroughs.
+ • Test data proves correct patient/encounter references across departments.
+ • Privacy, access, clinical risk and operational recovery requirements receive appropriate review.
+ • The visible production UI and test results are demonstrated in the running application, not only in screenshots or
+ documentation.
+Client acceptance statement: The hospital needs a system that helps staff deliver care with fewer unnecessary
+clicks, clear actions and reliable shared records. Approval depends on successfully demonstrating a complete
+patient visit in the real application.
+16. Reference framework and qualification
+The requirements use general concepts associated with hospital and EMR platforms such as Bahmni and
+OpenMRS, health IT usability principles associated with AHRQ/ONC, and interoperability concepts from HL7
+FHIR. These are orientation references only; the document does not assert vendor certification or regulatory
+compliance.
+Recommended reference sites: bahmni.org | openmrs.org | healthit.gov | healthit.ahrq.gov | hl7.org/fhir |
+core.telegram.org/bots/webapps
+Before using the system with real patients, involve licensed clinicians and local regulatory/privacy specialists;
+verify local clinical, legal, operational and data-protection requirements.
+
+
+=== PAGE 9 ===
+E-Hospital Management | Client Requirements | Addendum v1.1
+Addendum 1
+ADDENDUM A | WEB-BUILT MINI APPS AND TELEGRAM HOSPITAL BOT
+Web Mini Apps, QR Phone Access and Hospital Bot
+Document revision: Version 1.1 | 11 November 2026. This addendum supplements the existing eight-page E-Hospital client
+requirements. It clarifies the technology and adds implementable acceptance criteria.
+A1. Confirmed delivery model
+The doctor and patient Mini Apps must be built as web applications using the existing Spring Boot, Thymeleaf, Tailwind CSS and
+JavaScript stack. They are not native Android/iOS applications. The same hosted application must render comfortably on phones
+through responsive, touch-friendly layouts, and be launchable inside Telegram using QR codes and bot links.
+• Desktop web remains the main hospital administration and clinical management environment.
+• Mini App screens are purpose-designed web views optimized for phone usage; they reuse the hospital backend and records rather than
+maintaining a second data store.
+• Provide a browser preview for local development; real Telegram access requires the configured public HTTPS deployment and Telegram bot.
+• Changes made by authorized users in web or Mini App must be reflected in the same appointment, encounter, queue and patient records.
+A2. QR onboarding versus clinical check-in
+ QR type
+Intended flow
+Security requirement
+Mini App access QR
+Scan hospital poster or doctor invitation -> open
+Telegram bot/Mini App -> account-linking/sign-in
+-> authorized dashboard
+Public QR links never grant doctor rights or reveal patient data.
+Patient arrival/check-in QR
+Open authorized patient visit -> scan on-site
+check-in QR or show appointment ticket -> validate
+-> mark arrival -> assign queue
+Short-lived, scoped, replay-resistant tokens; verify
+hospital/appointment eligibility and patient authorization.
+A3. Hospital bot - required capabilities
+Create a hospital Telegram bot integration with configurable bot identity, bot token stored server-side, webhook endpoint,
+command handlers, localization, and safe messaging. BotFather provisioning and Telegram credentials remain externally
+configured.
+Bot area
+Requirements
+Entry and help
+/start, /help, /language, /contact; welcome message, hospital location/hours, quick web-app launch controls.
+Patient services
+Launch appointment booking, upcoming bookings, arrival/check-in and queue status; send optional generic
+reminders without exposing sensitive clinical details.
+Doctor services
+After secure staff account linking, launch assigned queue, today's schedule, tasks and results-review worklist; never
+grant privileges from a QR alone.
+Administrative operations
+Configure bot username, link, webhook health, allowed notification templates, enable/disable options, logs, error
+handling and QR poster printing.
+A4. Authentication and privacy
+• Verify Telegram Mini App initData on the Spring Boot server and check freshness; never trust initDataUnsafe or a frontend role switch.
+• Link Telegram identities to hospital patient/staff records through an independently verified hospital login or approved account-linking
+procedure.
+• Use role- and patient-scoped server authorization, audit access and changes, and secure sessions.
+• Never place medical records, diagnoses or sensitive documents into public QR tokens or routine Telegram chat notifications.
+• Demo mode must be explicitly labeled and must not permit real clinical access.
+
+
+=== PAGE 10 ===
+E-Hospital Management | Client Requirements | Addendum v1.1
+Addendum 2
+ADDENDUM B | IMPLEMENTATION, UI AND ACCEPTANCE
+Mini App and Bot Delivery Requirements
+B1. Patient web Mini App
+• Home: next appointment, department, queue status and quick actions.
+• Booking: search specialty/doctor, choose real available slot from shared service, confirm/reschedule/cancel when permitted.
+• Arrival: phone-friendly scanner where supported, on-site QR validation, manual fallback and duplicate check-in prevention.
+• Queue: ticket number, department, status and instructions; avoid ungrounded exact waiting-time estimates.
+• Records: release-gated results, prescriptions, certificates and visit history, accessible only after verified authorization.
+• Accessibility: English/Khmer, local Khmer font, dark/light themes, safe areas, 360-430 px phone widths, readable controls.
+B2. Doctor web Mini App
+• My day: assigned appointments, active consultations, waiting patients, pending clinical tasks.
+• My queue: call patient, hold, transfer with clinician selection, start consultation, complete queue step.
+• Patient context: verified assigned encounter, allergies, vitals, recent history, lab/imaging results and outstanding orders.
+• Documentation: save or review authorized clinical note drafts, view certificate drafts, track signed items; apply clinical sign-off rules.
+• Mobile usability: sticky patient identity, few primary actions, bottom navigation, robust navigation/back behavior and no horizontal overflow.
+B3. Bot setup and QR management screen
+• Admin path: Settings > Telegram Integration; connection status, webhook test, bot identity, Mini App URL and launch-link preview.
+• Generate printable patient and doctor Mini App access QR posters from real configured Telegram deep links, with explicit role labels.
+• Provide a public HTTPS host requirement and BotFather setup instructions; local localhost links must only be used for browser preview.
+• Implement safe notification templates and consent/preferences, webhook signature/secret handling where configured, delivery history and
+rate limits.
+• No hard-coded bot tokens; secrets live in server environment/secret manager and never in templates or browser bundles.
+B4. Acceptance tests for client sign-off
+ Test
+Expected result
+Patient QR from phone
+Scan printed QR -> Telegram Mini App opens (with configured bot/HTTPS) -> verified patient signs in -> books visit.
+Hospital check-in
+Patient checks in exactly once for an eligible appointment; correct visit and queue update appears on desktop.
+Doctor QR from phone
+Scanning QR opens Mini App; unauthorized user cannot see doctor workspace; verified assigned doctor sees own
+queue.
+Cross-channel consistency
+Doctor queue action updates receptionist desktop and patient queue UI using the same record identifiers.
+Accessibility and themes
+Doctor/patient workflows pass Khmer/English, light/dark and narrow-screen tests without clipping.
+Bot security
+Invalid/stale Telegram initData rejected; no clinical data sent in chat notifications; secrets absent from frontend.
+B5. Implementation and readiness milestones
+Milestone 1 - Prototype: Responsive Mini App web screens, shared in-memory hospital workflows, browser preview, mock QR UI,
+functional demo actions. Milestone 2 - Telegram sandbox: BotFather bot, public HTTPS, verified initData, secure account linking,
+QR launch, bot commands and controlled notifications. Milestone 3 - Production readiness: Real authentication, database,
+audit/security/privacy review, patient consent, monitoring, backups, testing on representative phones, and clinical approval.
+Scope note: The bot and live Mini App integration are requirements to implement, not claims that they are already deployed. Real phone-based
+Telegram tests require configured bot credentials and HTTPS hosting.

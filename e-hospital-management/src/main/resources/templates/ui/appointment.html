@@ -4,7 +4,7 @@
 <body class="clinic-page" x-data="appointmentWorkspace()">
 <script th:inline="javascript">window.APPT={id:/*[[${appointmentId}]]*/ '',role:/*[[${role}]]*/ '',doctor:/*[[${doctorId}]]*/ ''};</script>
 <script defer src="/ui/appointment.js"></script><script defer src="/ui/vendor/alpine.js"></script>
-<header th:replace="~{ui/fragments/clinic :: top('appointments')}"></header>
+<div class="shell" x-data="shellState()" :class="{'sidebar-compact':compact,'nav-open':mobileNav}"><div class="mobile-nav-backdrop" x-cloak x-show="mobileNav" @click="mobileNav=false"></div><aside th:replace="~{ui/fragments/shell :: sidebar}"></aside><div class="app-main"><header th:replace="~{ui/fragments/shell :: topbar('Appointments','Appointment details')}"></header>
 <main class="clinic-shell">
   <div class="demo-banner">Synthetic demo data · Clinician review is required for every clinical document.</div>
   <div class="alert-box error" role="alert" x-show="error" x-text="error" x-cloak></div>
@@ -22,8 +22,8 @@
         <span x-show="a.date"><span x-text="a.date"></span> · <span x-text="a.time"></span></span>
       </div>
       <div class="patient-alerts" x-show="clinical">
-        <span class="pill pill-red" x-show="p.allergies"><span>Allergies</span><span data-no-translate x-text="p.allergies"></span></span>
-        <span class="pill pill-green" x-show="clinical && !p.allergies">No known allergies recorded</span>
+        <span class="pill pill-red" x-show="hasAllergy"><span>Allergies</span> <span data-no-translate x-text="p.allergies"></span></span>
+        <span class="pill allergy-none" x-show="clinical && !hasAllergy"><span>Allergies</span> <span data-no-translate x-text="p.allergies || Clinic.t('None recorded')"></span></span>
         <span class="pill pill-amber" x-show="p.conditions" data-no-translate x-text="p.conditions"></span>
       </div>
     </div>
@@ -118,5 +118,6 @@
     </aside>
   </div>
 </main>
+</div></div>
 </body>
 </html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{ui/fragments/clinic :: head('Medical Certificates')}"></head>
+<body class="clinic-page" x-data="certificateList()">
+<script th:inline="javascript">window.DOCS={role:/*[[${role}]]*/ '',doctor:/*[[${doctorId}]]*/ ''};</script>
+<script defer src="/ui/documents.js"></script><script defer src="/ui/vendor/alpine.js"></script>
+<div class="shell" x-data="shellState()" :class="{'sidebar-compact':compact,'nav-open':mobileNav}"><div class="mobile-nav-backdrop" x-cloak x-show="mobileNav" @click="mobileNav=false"></div>
+<aside th:replace="~{ui/fragments/shell :: sidebar}"></aside><div class="app-main">
+<header th:replace="~{ui/fragments/shell :: topbar('Clinical work','Medical Certificates')}"></header>
+<main class="page2" id="main-content">
+  <div class="page2-head"><div><h1>Medical Certificates</h1><p class="muted">Certificates are written inside the patient's encounter, so patient and doctor details fill in automatically. A clinician reviews and issues every certificate.</p></div></div>
+  <div class="alert-box error" role="alert" x-show="error" x-text="error" x-cloak></div>
+
+  <section class="card2">
+    <div class="card2-head"><h2>Start a certificate</h2><small class="muted">Choose one of your open encounters</small></div>
+    <ul class="list2" x-show="open.length"><template x-for="v in open" :key="v.id"><li><a :href="'/care/patients/'+v.patient+'/encounters/'+v.id+'?tab=cert'"><span class="list2-main"><strong x-text="v.patientLabel" data-no-translate></strong><small x-text="v.id+' · '+v.date+' · '+(v.departmentLabel||'')" data-no-translate></small></span><span class="badge2" :class="'tone2-'+Clinic.tone(v.status)" data-ui-text x-text="v.status"></span><span class="btn2 btn2-secondary btn2-sm">New certificate</span></a></li></template></ul>
+    <div class="empty2" x-show="!open.length"><i data-lucide="inbox"></i><p>No open encounters. Certificates can also be written from a completed encounter in the patient chart.</p></div>
+  </section>
+
+  <section class="card2">
+    <div class="card2-head"><h2>Certificate history</h2>
+      <div class="filters2"><input type="search" x-model="q" placeholder="Search patient or certificate" aria-label="Search certificates"><select x-model="status" aria-label="Status"><option value="">All statuses</option><option>Draft</option><option>Issued</option></select></div></div>
+    <div class="table2-wrap" x-show="filtered.length">
+      <table class="table2"><thead><tr><th>Certificate</th><th>Patient</th><th>Encounter</th><th>Status</th><th class="num">Actions</th></tr></thead>
+        <tbody><template x-for="d in filtered" :key="d.id"><tr>
+          <td><strong data-ui-text x-text="d.template"></strong><small class="cell2" x-text="d.id+' · v'+d.version" data-no-translate></small></td>
+          <td data-no-translate x-text="d.patientLabel"></td><td data-no-translate x-text="d.encounter"></td>
+          <td><span class="badge2" :class="'tone2-'+Clinic.tone(d.status)" data-ui-text x-text="d.status"></span></td>
+          <td class="num"><a class="btn2 btn2-secondary btn2-sm" :href="'/care/patients/'+d.patient+'/encounters/'+d.encounter+'?tab=cert'" x-text="Clinic.t(d.status==='Draft'?'Continue':'Open')"></a></td>
+        </tr></template></tbody></table>
+    </div>
+    <div class="empty2" x-show="!filtered.length"><i data-lucide="file-badge"></i><p x-text="Clinic.t(docs.length?'No certificates match your filters.':'No certificates yet.')"></p></div>
+  </section>
+</main></div></div>
+</body>
+</html>

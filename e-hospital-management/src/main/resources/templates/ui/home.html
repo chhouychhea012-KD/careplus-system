@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{ui/fragments/clinic :: head('Dashboard')}"></head>
+<body class="clinic-page" x-data="roleHome()">
+<script th:inline="javascript">window.HOME={role:/*[[${role}]]*/ '',doctor:/*[[${doctorId}]]*/ ''};</script>
+<script defer src="/ui/vendor/chart.js"></script><script defer src="/ui/home.js"></script><script defer src="/ui/vendor/alpine.js"></script>
+<div class="shell" x-data="shellState()" :class="{'sidebar-compact':compact,'nav-open':mobileNav}"><div class="mobile-nav-backdrop" x-cloak x-show="mobileNav" @click="mobileNav=false"></div>
+<aside th:replace="~{ui/fragments/shell :: sidebar}"></aside><div class="app-main">
+<header th:replace="~{ui/fragments/shell :: topbar('','Dashboard')}"></header>
+<main class="page2" id="main-content">
+  <div class="page2-head">
+    <div><p class="eyebrow2" x-text="dateLabel"></p><h1><span x-text="greeting"></span></h1><p class="muted"><span data-ui-text x-text="intro"></span></p></div>
+    <div class="page2-actions"><template x-for="(a,i) in d.actions||[]" :key="a.href"><a class="btn2" :class="i===0?'btn2-primary':'btn2-secondary'" :href="a.href" data-ui-text x-text="a.title"></a></template></div>
+  </div>
+  <div class="alert-box error" role="alert" x-show="error" x-text="error" x-cloak></div>
+  <div class="alert-box ok" role="status" x-show="message" x-text="message" x-cloak></div>
+
+  <!-- Loading skeleton -->
+  <div class="tiles2" x-show="loading"><template x-for="i in 4"><div class="tile2 skeleton"></div></template></div>
+
+  <!-- Doctor: current consultation and next patient first: the two things a doctor acts on. -->
+  <section class="focus2" x-show="role==='Doctor' && !loading" x-cloak>
+    <article class="card2 focus2-current">
+      <div class="card2-head"><h2>Current consultation</h2><i data-lucide="stethoscope"></i></div>
+      <template x-if="d.current"><div><a class="focus2-name" :href="d.current.href" x-text="d.current.title" data-no-translate></a><p class="muted" x-text="d.current.detail" data-no-translate></p><a class="btn2 btn2-primary" :href="d.current.href">Open workspace</a></div></template>
+      <template x-if="!d.current"><div class="empty2"><i data-lucide="coffee"></i><p>No consultation in progress.</p></div></template>
+    </article>
+    <article class="card2 focus2-next">
+      <div class="card2-head"><h2>Next patient</h2><i data-lucide="user-round"></i></div>
+      <template x-if="d.next"><div><strong class="focus2-name" x-text="d.next.title" data-no-translate></strong><p class="muted"><span x-text="d.next.detail" data-no-translate></span> <span class="badge2" :class="'tone2-'+Clinic.tone(d.next.status)" data-ui-text x-text="d.next.status"></span></p><button type="button" class="btn2 btn2-primary" @click="callNext()" :disabled="busy"><i data-lucide="megaphone"></i><span>Call next patient</span></button></div></template>
+      <template x-if="!d.next"><div class="empty2"><i data-lucide="circle-check"></i><p>Nobody is waiting for you.</p></div></template>
+    </article>
+  </section>
+
+  <section class="tiles2" x-show="!loading" x-cloak>
+    <template x-for="t in d.tiles||[]" :key="t.label"><a class="tile2" :class="'tone2-'+t.tone" :href="t.href"><span class="tile2-label" data-ui-text x-text="t.label"></span><strong class="tile2-value" x-text="t.value"></strong><small class="tile2-hint" data-ui-text x-text="t.hint"></small></a></template>
+  </section>
+
+  <section class="grid2" x-show="!loading" x-cloak>
+    <template x-for="block in blocks" :key="block.key">
+      <article class="card2">
+        <div class="card2-head"><h2 data-ui-text x-text="block.title"></h2><a class="link2" :href="block.more" x-show="block.more" data-ui-text x-text="block.moreLabel||'View all'"></a></div>
+        <ul class="list2" x-show="(d.lists?.[block.key]||[]).length">
+          <template x-for="(r,i) in d.lists?.[block.key]||[]" :key="block.key+i"><li><a :href="r.href"><span class="list2-main"><strong x-text="r.title" data-no-translate></strong><small x-text="r.detail" data-no-translate></small></span><span class="badge2" :class="'tone2-'+Clinic.tone(r.status)" x-show="r.status" data-ui-text x-text="r.status"></span></a></li></template>
+        </ul>
+        <div class="empty2" x-show="!(d.lists?.[block.key]||[]).length"><i data-lucide="inbox"></i><p data-ui-text x-text="block.empty"></p></div>
+      </article>
+    </template>
+
+    <!-- Queue by station (reception, nurse, admin) -->
+    <article class="card2" x-show="d.queueByStation">
+      <div class="card2-head"><h2>Queue overview</h2><a class="link2" x-show="role!=='Hospital Director'" href="/care/queue">Open queue</a></div>
+      <ul class="bars2"><template x-for="[st,n] in Object.entries(d.queueByStation||{})" :key="st"><li><span data-ui-text x-text="st"></span><span class="bars2-track"><span class="bars2-fill" :style="'width:'+barWidth(n,d.queueByStation)+'%'"></span></span><strong x-text="n"></strong></li></template></ul>
+    </article>
+
+    <!-- Lab status mix -->
+    <article class="card2" x-show="d.byStatus">
+      <div class="card2-head"><h2>Orders by status</h2></div>
+      <ul class="bars2"><template x-for="[st,n] in Object.entries(d.byStatus||{})" :key="st"><li><span data-ui-text x-text="st"></span><span class="bars2-track"><span class="bars2-fill" :style="'width:'+barWidth(n,d.byStatus)+'%'"></span></span><strong x-text="n"></strong></li></template></ul>
+    </article>
+  </section>
+
+  <!-- Administrator: hospital activity -->
+  <section class="grid2" x-show="d.departments" x-cloak>
+    <article class="card2 span2">
+      <div class="card2-head"><h2>Department activity today</h2><a class="link2" href="/overview">Hospital analytics</a></div>
+      <div class="chart2"><canvas id="deptChart" aria-label="Appointments and visits by department"></canvas></div>
+    </article>
+    <article class="card2">
+      <div class="card2-head"><h2>Staff availability</h2><a class="link2" href="/staff">Staff</a></div>
+      <h3 class="sub2">Doctors</h3>
+      <ul class="kv2"><template x-for="[k,v] in Object.entries(d.staff?.doctors||{})" :key="'d'+k"><li><span data-ui-text x-text="k"></span><strong x-text="v"></strong></li></template></ul>
+      <h3 class="sub2">Staff</h3>
+      <ul class="kv2"><template x-for="[k,v] in Object.entries(d.staff?.staff||{})" :key="'s'+k"><li><span data-ui-text x-text="k"></span><strong x-text="v"></strong></li></template></ul>
+    </article>
+    <article class="card2">
+      <div class="card2-head"><h2>Queue performance</h2><a class="link2" href="/care/queue">Queue</a></div>
+      <ul class="kv2"><li><span>Average wait before call</span><strong x-text="d.queue?.averageWait"></strong></li><li><span>Longest current wait</span><strong x-text="d.queue?.longestWait"></strong></li></ul>
+      <ul class="kv2"><template x-for="[k,v] in Object.entries(d.queue?.byStatus||{})" :key="'q'+k"><li><span data-ui-text x-text="k"></span><strong x-text="v"></strong></li></template></ul>
+    </article>
+    <article class="card2">
+      <div class="card2-head"><h2>Billing summary</h2><a class="link2" href="/billing">Invoices</a></div>
+      <ul class="kv2"><li><span>Invoiced</span><strong x-text="d.billing?.invoiced"></strong></li><li><span>Collected</span><strong x-text="d.billing?.collected"></strong></li></ul>
+      <ul class="kv2"><template x-for="[k,v] in Object.entries(d.billing?.byStatus||{})" :key="'b'+k"><li><span data-ui-text x-text="k"></span><strong x-text="v"></strong></li></template></ul>
+    </article>
+  </section>
+  <p class="foot2 muted">Synthetic demo data. Figures update when you reload; the queue refreshes every 30 seconds.</p>
+</main></div></div>
+</body>
+</html>

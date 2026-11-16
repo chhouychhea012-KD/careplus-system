@@ -1,5 +1,31 @@
 # Telegram Mini App setup — CarePlus
 
+## Requirements upgrade: bot commands and webhook (2026-11-11)
+
+The current checkout includes `HospitalBotController` and `HospitalBotService`. The default is **demo preview**, with webhook delivery disabled. Settings → Telegram Mini App includes an administrator-only English/Khmer command preview, public contact/hours, webhook readiness, last receipt, and bounded command history. Preview never sends a message.
+
+Server environment variables:
+
+| Variable | Purpose |
+|---|---|
+| `CAREPLUS_TELEGRAM_BOT_TOKEN` | BotFather token, never returned to the browser |
+| `CAREPLUS_MODE` | `demo` by default; `integration` requires verified Telegram-linked Mini App sessions |
+| `CAREPLUS_TELEGRAM_WEBHOOK_SECRET` | A separately generated random secret; use Telegram's allowed A–Z/a–z/0–9/underscore/hyphen characters, 1–256 characters |
+| `CAREPLUS_TELEGRAM_WEBHOOK_ENABLED` | Set `true` only for configured sandbox webhook testing |
+| `CAREPLUS_TELEGRAM_SEND_ENABLED` | Optional event-notification sending, `false` by default |
+
+Set secrets through your deployment environment/secret manager, never in source, query strings, browser storage, or screenshots. Configure a public HTTPS base URL and bot username in the administration screen; set `/contact` information for the real hospital there. Configuration, account links, consent, and logs remain in memory and reset on restart.
+
+Register `https://YOUR-HOST/api/telegram/webhook` with Telegram's `setWebhook` method using the same `secret_token` as the server variable, and `allowed_updates=["message"]`. Supply the bot token to a trusted server-side deployment tool; do not paste it into frontend code. Registration is an external deployment step and was **not performed** during local verification. Use Telegram's `getWebhookInfo` to inspect remote connection/pending-update/error status; the local settings screen reports receipt history, not a remote health probe.
+
+The webhook checks `X-Telegram-Bot-Api-Secret-Token` with a constant-time comparison. Only this route is exempt from browser CSRF, and it fails closed unless enabled with a bot token and webhook secret. Other application POST routes still require CSRF. Private chats only; group/channel updates and mismatched sender/chat IDs receive no clinical response. Duplicate update IDs are ignored for the retained 24-hour window; command calls are limited to 20 per chat per minute. Tracking is bounded and in memory. It is not a distributed production rate limiter.
+
+Commands: `/start`, `/help`, `/language en`, `/language km`, `/contact`. Replies provide generic guidance and configured public contact information. If HTTPS is configured, buttons launch patient/doctor web Mini Apps through `/tg`; account role comes from verified account linking, never the button or public QR. Language preferences persist only for the current process. No clinical records are read by the bot command handler. The webhook returns Telegram's `sendMessage` method response; that prepares a response for Telegram to execute and does not prove message delivery.
+
+Event-driven appointment/queue/follow-up notifications already use opt-in generic templates and an outbox. Timed reminder scheduling, durable retries, delivery confirmation, production identity, durable consent, and real-device testing remain unfinished. Integration mode is a sandbox path, not production authentication: administrative linking still uses the synthetic hospital application.
+
+Protocol references: [Telegram Bot API webhook and response methods](https://core.telegram.org/bots/api#setwebhook), [Telegram Mini App server validation](https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app). Local tests use synthetic credentials; no live token was supplied.
+
 This guide connects the CarePlus doctor and patient Mini Apps to a real Telegram bot, so that staff and patients can scan a printed QR code with their phone and open CarePlus inside Telegram.
 
 > **Status of this build**

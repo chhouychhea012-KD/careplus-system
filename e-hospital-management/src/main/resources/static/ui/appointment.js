@@ -9,7 +9,8 @@ function appointmentWorkspace(){return {
   get flow(){return ['Doctor','Nurse','Receptionist','Administrator','Hospital Administrator'].includes(this.role)},
   get open(){return this.v.id&&!['Completed','Cancelled','Transferred'].includes(this.v.status)},
   get age(){return this.p.dateOfBirth?Math.floor((Date.now()-new Date(this.p.dateOfBirth))/31557600000):''},
-  get vitals(){return (this.ctx.documents||[]).filter(d=>d.kind==='triage').at(-1)},
+  get hasAllergy(){const t=(this.p.allergies||'').trim();return !!t&&!/^(no known|none|nil|nkda|n\/a|no allergies)/i.test(t)},
+  get vitals(){return (this.ctx.documents||[]).filter(d=>d.kind==='triage'&&d.encounter===this.v.id).at(-1)},
   initials(n){return (n||'').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()},
   statusWord(s){return {done:'Done',current:'In progress',pending:'Pending',skipped:'Skipped',blocked:'Waiting on others',cancelled:'Cancelled'}[s]||s},
   async init(){await this.load()},
@@ -30,7 +31,7 @@ function appointmentWorkspace(){return {
     return map[t]||[];
   },
   get clinicalActions(){
-    if(!this.clinical||!this.v.id)return [];const a=[],ws=this.workspace.bind(this);
+    if(!this.clinical)return [];if(!this.v.id)return this.p.id?[{key:'record',label:'Open Patient Record',go:'/care/patients/'+this.p.id}]:[];const a=[],ws=this.workspace.bind(this);
     if(this.open&&this.q.status==='Waiting')a.push({key:'call',label:'Call Patient',run:()=>this.queue('Called')});
     if(this.open&&this.doctorish&&this.v.status==='Waiting')a.push({key:'start',label:'Start Consultation',primary:true,run:()=>this.start()});
     a.push({key:'workspace',label:this.v.status==='In consultation'?'Open Consultation':'Open Encounter Workspace',primary:this.v.status==='In consultation',go:ws()});

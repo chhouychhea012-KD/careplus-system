@@ -1,25 +1,27 @@
-# CarePlus Java sync manifest — generated 2026-11-11 (round 2).
+# CarePlus Java sync manifest — generated 2026-11-11 (round 3: role navigation and dashboards).
 # sha256 | file in D:\ehospital-review | destination in this project
 # sync-java.ps1 refuses to copy if any staged file differs from these hashes.
-2d6e6960e2e89b49e848619d7daf383fad09495ad96e15d438e43953f4f4a99d | main\controller\CareController.java | src\main\java\com\example\e_hospital\management\prototype\controller\CareController.java
+c00599248e1840d4a17451568d06e53a95d7df3c6d4e9f6af90212882fd7bc37 | main\controller\CareController.java | src\main\java\com\example\e_hospital\management\prototype\controller\CareController.java
 60534c48d3f4505e3feb3e4b166990616f085edbeb16eb79eea15e25cbfa73fd | main\controller\DemoAccess.java | src\main\java\com\example\e_hospital\management\prototype\controller\DemoAccess.java
 ae0eec9f8c3f13451ad23b44276a5f8a77e6e562b9976bdad94bdebcd0f56064 | main\controller\ErrorPageController.java | src\main\java\com\example\e_hospital\management\prototype\controller\ErrorPageController.java
-acbc975028ddf83abb450e78086086f43fa503c279c6b4a847525412ba117856 | main\controller\HospitalApi.java | src\main\java\com\example\e_hospital\management\prototype\controller\HospitalApi.java
+0980cdcbf9ee1c4af38e758b94918bd9eaa062862bdf63dff2c6403be52a372e | main\controller\HospitalApi.java | src\main\java\com\example\e_hospital\management\prototype\controller\HospitalApi.java
+f05e4618292d0fb0b06a62c9adc208efab8b6c14f2e1376a6b00c22ea94fae16 | main\controller\NavigationAdvice.java | src\main\java\com\example\e_hospital\management\prototype\controller\NavigationAdvice.java
 8b9d9d757bf53a4528e6b54b8e7f602578459c2077c4b39a37c3ea4dad9c3930 | main\controller\TelegramController.java | src\main\java\com\example\e_hospital\management\prototype\controller\TelegramController.java
-e518f24c7ae9769160d8698bb8b9361f44e920553ab11f2c1ebc852a745d5b43 | main\controller\WorkspaceController.java | src\main\java\com\example\e_hospital\management\prototype\controller\WorkspaceController.java
+4660b0adb462421c20b41d43b68abf619ed4a90432066907f77cbb66a59cf7a6 | main\controller\WorkspaceController.java | src\main\java\com\example\e_hospital\management\prototype\controller\WorkspaceController.java
 eb1f0372dbd01c9ac91e5030ff2f3884a56641d4a2ddf43e39354d31e69567ec | main\data\ModuleCatalog.java | src\main\java\com\example\e_hospital\management\prototype\data\ModuleCatalog.java
 8b7be209e38a7647d381e6c630ac2643e6f570a8598faaab24e1803166224e39 | main\model\FieldDefinition.java | src\main\java\com\example\e_hospital\management\prototype\model\FieldDefinition.java
 2dcc3f449c5be6bdf7a4b74538c9908121e841d72648539550729187df411cad | main\model\ModuleDefinition.java | src\main\java\com\example\e_hospital\management\prototype\model\ModuleDefinition.java
 6c8621568bb82647403323ba96c204e61a55d389a4923e15852f046ab4a7f240 | main\model\RecordPage.java | src\main\java\com\example\e_hospital\management\prototype\model\RecordPage.java
 05fecd469e56e8d717977f704b096d12850115fdec5b8abdd33b1779134a0da9 | main\service\CareNotificationBridge.java | src\main\java\com\example\e_hospital\management\prototype\service\CareNotificationBridge.java
 468872279e976df5d9a8585725647a9c8b3128250a5d93945cb9b48729676a76 | main\service\CsvReader.java | src\main\java\com\example\e_hospital\management\prototype\service\CsvReader.java
-779ca0ad6e1e092d93b55ac5fc24eab5a1cf8fc8127ff8bc0aadb94395df7bda | main\service\HospitalService.java | src\main\java\com\example\e_hospital\management\prototype\service\HospitalService.java
-7f691d8590cf17ac9415ee97077da4bd78c8f9ab0c47f8a99f4f691c2f45ba87 | main\service\InMemoryHospitalService.java | src\main\java\com\example\e_hospital\management\prototype\service\InMemoryHospitalService.java
+f5e24c98c53593ec3981fe49656046ef996cfc4eb88e1801afa45e388eeea128 | main\service\HospitalService.java | src\main\java\com\example\e_hospital\management\prototype\service\HospitalService.java
+c4c92e939dfcf40a75e56fb0edde8131ffe471f4886141d262e3d2a2c88509f0 | main\service\InMemoryHospitalService.java | src\main\java\com\example\e_hospital\management\prototype\service\InMemoryHospitalService.java
 5a66ffbc585d507e7ce1030c472072811578dd67e40300163257cc286defa904 | main\service\TelegramAccessService.java | src\main\java\com\example\e_hospital\management\prototype\service\TelegramAccessService.java
 59fd8fbbf18a14721cd36dd0631d1e070052ba26f80e8a96da550ebbf4c8b69d | main\service\TelegramInitDataVerifier.java | src\main\java\com\example\e_hospital\management\prototype\service\TelegramInitDataVerifier.java
 f91a2a857baed9275fe32f1bee02c9d2be54e8ae17620a15ce179d8810d4f51b | test\ConnectedCareTests.java | src\test\java\com\example\e_hospital\management\prototype\ConnectedCareTests.java
 d9c0b23c73dd7bb21f6c40db368f84ad75832b5bcf941b5dae12acc679a0a28c | test\HospitalWorkflowTests.java | src\test\java\com\example\e_hospital\management\prototype\HospitalWorkflowTests.java
 ed501a40763c2d4355d7cf3c0bf7562d13e9c9b7186af62109e4a8dd1f5037c9 | test\JourneyAndCheckInTests.java | src\test\java\com\example\e_hospital\management\prototype\JourneyAndCheckInTests.java
+5d18968591928fdbfacc098fb36fb0d3b3feeefaad39ba16148e99a6c8871c52 | test\RoleNavigationAndDashboardTests.java | src\test\java\com\example\e_hospital\management\prototype\RoleNavigationAndDashboardTests.java
 2e00b8b044875b3c07e2d44c6e7049be2e2cee9fc0270cadf874cd759f42a2ca | test\TelegramIntegrationModeTests.java | src\test\java\com\example\e_hospital\management\prototype\TelegramIntegrationModeTests.java
 c12915bdbeee35edcb3b7360f7047c11b519c04153c0ac86c4a5293f733f7a79 | test\TelegramVerificationTests.java | src\test\java\com\example\e_hospital\management\prototype\TelegramVerificationTests.java
 dd2da46b572d8f0d6e736e67f244efba7540cffc754ebfa4dba544ac49b82202 | test\WorkflowIntegrityTests.java | src\test\java\com\example\e_hospital\management\prototype\WorkflowIntegrityTests.java

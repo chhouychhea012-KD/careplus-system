@@ -1,0 +1,947 @@
+[
+  {
+    "path": "src/test/resources/application-test.properties",
+    "bytes": 396,
+    "sha256": "02b2e9709a653a4956782a60bc8f47b4557c22b93d65baf8719ddd949c6bc81a"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/EHospitalManagementApplicationTests.java",
+    "bytes": 3964,
+    "sha256": "6e0536f34051585f64d38dac842d1d9931373dcf7eff631dce02dbae8616ec7c"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/config/DatabaseMigrationSqlTests.java",
+    "bytes": 2422,
+    "sha256": "07023d9ef86806920c9ac5739826f5b8367813ced0c2579b5ece67e06e307278"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/config/DatabaseSafetyPolicyTests.java",
+    "bytes": 5868,
+    "sha256": "afcd1b50abd4f5759f4f668a535764cadf593d85e41af077994241429cf6c9a2"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/config/JpaSchemaValidationTests.java",
+    "bytes": 2510,
+    "sha256": "8f6030c517785e17972b0019fbd2ed1161a62d6f8a2af92877e4ba3ebf2d0515"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/prototype/ConnectedCareTests.java",
+    "bytes": 13481,
+    "sha256": "f91a2a857baed9275fe32f1bee02c9d2be54e8ae17620a15ce179d8810d4f51b"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/prototype/DoctorScheduleTests.java",
+    "bytes": 2624,
+    "sha256": "5dbad59c458604518dddaf3daaedaab897864ace2d27ad23190e863d48f48d54"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/prototype/HospitalBotTests.java",
+    "bytes": 2414,
+    "sha256": "3f0354976643a323ae5c672a2246ed61826e8006c498dde1f5bd888ac834b0fe"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/prototype/HospitalWorkflowTests.java",
+    "bytes": 12986,
+    "sha256": "d9c0b23c73dd7bb21f6c40db368f84ad75832b5bcf941b5dae12acc679a0a28c"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/prototype/JourneyAndCheckInTests.java",
+    "bytes": 9369,
+    "sha256": "ed501a40763c2d4355d7cf3c0bf7562d13e9c9b7186af62109e4a8dd1f5037c9"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/prototype/RequirementsRegressionTests.java",
+    "bytes": 7401,
+    "sha256": "2a1a669d1bf742cf342a8c27b66ec9aef25772c4d1fceeca970ba05cf661e606"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/prototype/RoleNavigationAndDashboardTests.java",
+    "bytes": 6598,
+    "sha256": "5d18968591928fdbfacc098fb36fb0d3b3feeefaad39ba16148e99a6c8871c52"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/prototype/TelegramIntegrationModeTests.java",
+    "bytes": 9015,
+    "sha256": "2e00b8b044875b3c07e2d44c6e7049be2e2cee9fc0270cadf874cd759f42a2ca"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/prototype/TelegramVerificationTests.java",
+    "bytes": 3362,
+    "sha256": "c12915bdbeee35edcb3b7360f7047c11b519c04153c0ac86c4a5293f733f7a79"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/prototype/WorkflowIntegrityTests.java",
+    "bytes": 7763,
+    "sha256": "dd2da46b572d8f0d6e736e67f244efba7540cffc754ebfa4dba544ac49b82202"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/security/MutableClock.java",
+    "bytes": 473,
+    "sha256": "eec036dc4280d850174ff005d270973b64b934f2259a971f70f776f6667618ec"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/security/PasswordRecoveryPersistenceTests.java",
+    "bytes": 6414,
+    "sha256": "09d40e8c1f6d68e279458aa3868863802ed8ea02385da2a66d3780e678f25058"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/security/SecurityServiceTests.java",
+    "bytes": 9372,
+    "sha256": "d36a0fee42fd82897ccc19a22eb6d622e469621cff6d3735324387fa425eda10"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/security/SmtpResetDeliveryTests.java",
+    "bytes": 1904,
+    "sha256": "e9f557a5d27ebe3fd73ba80fe99b8c36f91186bc9a03f447f2abe79333da9cd5"
+  },
+  {
+    "path": "src/test/java/com/example/e_hospital/management/web/WebSecurityTests.java",
+    "bytes": 16702,
+    "sha256": "fbdc381790ec04dc8575bdee5ab1a5388b70adc2a71cb2b57a168d5f1550a463"
+  },
+  {
+    "path": "src/main/resources/application-dev.properties",
+    "bytes": 400,
+    "sha256": "56524c90081ad02c3cd7e32e56c832f1652f56b2c9dc920478292550731fb308"
+  },
+  {
+    "path": "src/main/resources/application-provision-admin.properties",
+    "bytes": 117,
+    "sha256": "06f2ee2676e2df7b0b549c5938bdbc40ec9e5ef0924a24f815e884a5abb869d7"
+  },
+  {
+    "path": "src/main/resources/application.properties",
+    "bytes": 1101,
+    "sha256": "7da83fd8fedf3d9d42cf806017ac772195164814b51ce74949bd24337e92ba82"
+  },
+  {
+    "path": "src/main/resources/templates/audit.html",
+    "bytes": 2005,
+    "sha256": "3da12a2fa3a19783d5603dccd66d228d9bd0d24b86ab5f42f8218c86b6565a25"
+  },
+  {
+    "path": "src/main/resources/templates/dashboard.html",
+    "bytes": 2474,
+    "sha256": "2622952718669fd780bd37ccc7b973e5533c7a159d2b89484ca3b8b3d1a024c3"
+  },
+  {
+    "path": "src/main/resources/templates/forgot-password.html",
+    "bytes": 1000,
+    "sha256": "50cd4869a9ef371b3510ef597309c588d5f4e14e823ae77790c8da3112f404cc"
+  },
+  {
+    "path": "src/main/resources/templates/help.html",
+    "bytes": 1335,
+    "sha256": "2cd7a3c57009f586a750028964512dcb65101e3181121119c102456de8ed7237"
+  },
+  {
+    "path": "src/main/resources/templates/login.html",
+    "bytes": 1680,
+    "sha256": "ef48e4d60031ffcc7d445f0ae58aca3e2892e7d4d7777c83520b2536691c7b3c"
+  },
+  {
+    "path": "src/main/resources/templates/password.html",
+    "bytes": 1588,
+    "sha256": "99c33023a3b62b144ec0eee694b0c52475b85ffd31c48faaffdea7db3e7a64e8"
+  },
+  {
+    "path": "src/main/resources/templates/profile.html",
+    "bytes": 1756,
+    "sha256": "755336cdf0533a6fc999810abb99e24ba4715c862d4503a8397d716b5330801c"
+  },
+  {
+    "path": "src/main/resources/templates/reset-password.html",
+    "bytes": 1415,
+    "sha256": "20d099a97d967f5d364def709c1ae441fc26a45bd1bab6d07b0493ec502dafd0"
+  },
+  {
+    "path": "src/main/resources/templates/user-form.html",
+    "bytes": 2532,
+    "sha256": "fda007326e2cad5d72c82dd82b15d844aceca6c2bd682baadb61c139c99520e0"
+  },
+  {
+    "path": "src/main/resources/templates/users.html",
+    "bytes": 2252,
+    "sha256": "2754bba21d83e25037b3c7b77db2a1f8ea3ca323f9f4818e9368322c588142b7"
+  },
+  {
+    "path": "src/main/resources/templates/error/400.html",
+    "bytes": 231,
+    "sha256": "fadf951b1e167e9f7797f94cb7cc50daa56f0c497938a9caa98cb00af39333da"
+  },
+  {
+    "path": "src/main/resources/templates/error/403.html",
+    "bytes": 255,
+    "sha256": "881c3b2ed87467de3cb08b6b42db106c2ca8da675b069240b6fdda86556cd46c"
+  },
+  {
+    "path": "src/main/resources/templates/error/404.html",
+    "bytes": 235,
+    "sha256": "ebe5a62a3ce89fce15cb7751b12bc578e49efda46fefd4d5af1fcff791ce1be7"
+  },
+  {
+    "path": "src/main/resources/templates/error/405.html",
+    "bytes": 226,
+    "sha256": "1b1f223b1a5a6a2f94d65108c723bb7a75c82b694abfd925ea0ac79ab1ce9166"
+  },
+  {
+    "path": "src/main/resources/templates/error/409.html",
+    "bytes": 255,
+    "sha256": "80aff996e925921562abd92f3b2d01b7411f0ba2e26ddf079b9139c67afd703c"
+  },
+  {
+    "path": "src/main/resources/templates/error/500.html",
+    "bytes": 266,
+    "sha256": "984d596bec2fccad847ec2ed444edcd32c0f46020ff1912fa9debd9a2d28f081"
+  },
+  {
+    "path": "src/main/resources/templates/fragments/alerts.html",
+    "bytes": 459,
+    "sha256": "e2ffb2d2843dfbe297403018cfd17c46e9cc97b24eaf8e5c174d066efc0f7c33"
+  },
+  {
+    "path": "src/main/resources/templates/fragments/error.html",
+    "bytes": 765,
+    "sha256": "f685fec2e4cae98b7749cf59ac84a95ab56c766c39a317933894c4707627fd96"
+  },
+  {
+    "path": "src/main/resources/templates/fragments/head.html",
+    "bytes": 534,
+    "sha256": "544645945ae76e08483c8fd5cc6e334edeaf6b9dd737d040aa398f9d1083a89a"
+  },
+  {
+    "path": "src/main/resources/templates/fragments/layout.html",
+    "bytes": 2713,
+    "sha256": "c7d6ebcce17fd9382efbce6c853020c71cf848199ed64891df6080c9951242ad"
+  },
+  {
+    "path": "src/main/resources/templates/fragments/public.html",
+    "bytes": 911,
+    "sha256": "66659fdea0ff0f42d2b4c3a1f0adf78efa4666048fa7e4f40c1e840120176477"
+  },
+  {
+    "path": "src/main/resources/templates/ui/appointment.html",
+    "bytes": 9277,
+    "sha256": "46ade994b8c83250d8f31c4e3b685988b5b4b3a50ddba8c21d02afef74a62f6c"
+  },
+  {
+    "path": "src/main/resources/templates/ui/care.html",
+    "bytes": 16798,
+    "sha256": "e5042847b21d92117a3a37c5f44ae1a73a27e2e2555b4e9b091e933422ba8cb4"
+  },
+  {
+    "path": "src/main/resources/templates/ui/certificates.html",
+    "bytes": 3604,
+    "sha256": "c4b9efbf62f4878ab2952eabe434a79c361223dd349d35d9133ba120a9a34d8c"
+  },
+  {
+    "path": "src/main/resources/templates/ui/checkin.html",
+    "bytes": 7208,
+    "sha256": "e1c7debea13ef3e5195ed2832627a02625735b59dd6ead734aa26d90b314ed55"
+  },
+  {
+    "path": "src/main/resources/templates/ui/error.html",
+    "bytes": 995,
+    "sha256": "2e46114248f0a01ebe9a5aa2ea557399d376976bb0eaf24c1e04cc95968f2407"
+  },
+  {
+    "path": "src/main/resources/templates/ui/home.html",
+    "bytes": 7788,
+    "sha256": "b74d69623d3b7e0b1fe11fa0323f80ae4fb5b111993730fb697f4dbc320b9f8f"
+  },
+  {
+    "path": "src/main/resources/templates/ui/login.html",
+    "bytes": 5786,
+    "sha256": "56df490d68b9354343d2041e537dd8de4344f045b8f139698804636a1bbc980c"
+  },
+  {
+    "path": "src/main/resources/templates/ui/mini.html",
+    "bytes": 27335,
+    "sha256": "c2fcb6f1ce0918e068b578362b36aa11f4446cc425df028c5880a16df66f50f4"
+  },
+  {
+    "path": "src/main/resources/templates/ui/queue.html",
+    "bytes": 10792,
+    "sha256": "ae018a21e2e279678fb14a7d99a08e1057531f8dfc8ce668bf1d3ed77752b211"
+  },
+  {
+    "path": "src/main/resources/templates/ui/schedules.html",
+    "bytes": 3935,
+    "sha256": "583b00524d0b1e7b4858f0051ac4dd3bf5e841523dedb01e76082dbd7c6ad208"
+  },
+  {
+    "path": "src/main/resources/templates/ui/tasks.html",
+    "bytes": 2031,
+    "sha256": "eaedd80393c1a3514088d3ec5ae9d25fb77829b86484734faa3b752d69dfa2d0"
+  },
+  {
+    "path": "src/main/resources/templates/ui/telegram.html",
+    "bytes": 9801,
+    "sha256": "d4e83e5fc3192545b3b57d1c783c567f36f65366d6a70446a94dddfb3ccca2f4"
+  },
+  {
+    "path": "src/main/resources/templates/ui/tg.html",
+    "bytes": 2561,
+    "sha256": "23ec16982a9889e56eb4e2fa91535c163bda389d99abef145fad507045419cba"
+  },
+  {
+    "path": "src/main/resources/templates/ui/workspace.html",
+    "bytes": 26613,
+    "sha256": "d509ab4b5b15d074abe65a5a2f4fb0cedcac6565b775415ef62b202f5f3de5db"
+  },
+  {
+    "path": "src/main/resources/templates/ui/fragments/clinic.html",
+    "bytes": 1993,
+    "sha256": "89a41a9db45eeba79d8d2274001b1fe3535a4d75d58be1e59a11e482e60908d0"
+  },
+  {
+    "path": "src/main/resources/templates/ui/fragments/dialogs.html",
+    "bytes": 19391,
+    "sha256": "e619fa32959efa4272699ed59c2106e11a7fc98a5b990673331389c6d8d1de07"
+  },
+  {
+    "path": "src/main/resources/templates/ui/fragments/layout.html",
+    "bytes": 7931,
+    "sha256": "d90d85ff09c964c2f22c379571a680d413a4930a3ad1ca6e40d35b88390ddeec"
+  },
+  {
+    "path": "src/main/resources/templates/ui/fragments/shell.html",
+    "bytes": 4340,
+    "sha256": "1ce56604b48ba6ecc95b78f2e7bdebf8c4308ac7ae8f64bae5dd635989b837c3"
+  },
+  {
+    "path": "src/main/resources/templates/ui/fragments/table.html",
+    "bytes": 6304,
+    "sha256": "e906efa0f6db38afe3d5b6cc5e874bfd1acbd2142b15a9d5fab1bfacdbaf0c3b"
+  },
+  {
+    "path": "src/main/resources/static/css/app.css",
+    "bytes": 11968,
+    "sha256": "cc652bef0bc190e9b02c2607f9fa46e09637f07fa74a4b5c015c9384231d2fa1"
+  },
+  {
+    "path": "src/main/resources/static/css/logo.svg",
+    "bytes": 201,
+    "sha256": "5865debf1b0958b3c52aef14d7ae261439c387ae5a9d6ecd6e2d5cc0e8f78573"
+  },
+  {
+    "path": "src/main/resources/static/js/app.js",
+    "bytes": 2605,
+    "sha256": "4660438ff12fa575eca40a9d5ff2e668fc335aeb18597351e56cf76e8d0676e5"
+  },
+  {
+    "path": "src/main/resources/static/ui/app.css",
+    "bytes": 51661,
+    "sha256": "1c1f17764ddca810745d9c3cb98ade318fe7aaf9d831f1903b752e638db62ca4"
+  },
+  {
+    "path": "src/main/resources/static/ui/app.js",
+    "bytes": 38206,
+    "sha256": "40795d0eb615b9ab753a143e0883215b44a6d76da711fce99f6e0a3c1bf90cb4"
+  },
+  {
+    "path": "src/main/resources/static/ui/appointment.js",
+    "bytes": 7832,
+    "sha256": "131ab29668d750ad392cb6ea7b651e680d6df8337c585832330e5a9358a9d67a"
+  },
+  {
+    "path": "src/main/resources/static/ui/care.css",
+    "bytes": 10868,
+    "sha256": "d64571cc3ea3e5d8bfcd072f160330bf73a727fadf8cd225387967daa578bf1e"
+  },
+  {
+    "path": "src/main/resources/static/ui/care.js",
+    "bytes": 14392,
+    "sha256": "ebaa8261a9448bd65e6bc3aaf22b33aaa98c4708d160860f84ec46b48f2cceff"
+  },
+  {
+    "path": "src/main/resources/static/ui/checkin.js",
+    "bytes": 2943,
+    "sha256": "31daf7dce77baab0edc5c818b87268ca7b66a42daa56f1f6c9e8ff18e8463d00"
+  },
+  {
+    "path": "src/main/resources/static/ui/clinic.css",
+    "bytes": 12356,
+    "sha256": "77ef580175bb50b670c331bafa4a2d1a68e039a6c7dc03e4403f438de204194b"
+  },
+  {
+    "path": "src/main/resources/static/ui/clinic.js",
+    "bytes": 5254,
+    "sha256": "c3a09f29a39c4356562c0599dee05f52224183eef49ae57067c4f28122dbf74f"
+  },
+  {
+    "path": "src/main/resources/static/ui/design.css",
+    "bytes": 18969,
+    "sha256": "b921d8632c0cb6f6d8f1df6f2b2a1bc686819fc5a4609b1a88d812018e440cc8"
+  },
+  {
+    "path": "src/main/resources/static/ui/documents.js",
+    "bytes": 1435,
+    "sha256": "1fba90226f8a0ac008e95e7981cbf9db077e7e3137a69d79d9d65416940776a4"
+  },
+  {
+    "path": "src/main/resources/static/ui/favicon.svg",
+    "bytes": 205,
+    "sha256": "d2e16aa6adf91fc5ff0e7b432f80dfc8eebfa750d7e8304f6b5cf6746fba720d"
+  },
+  {
+    "path": "src/main/resources/static/ui/home.js",
+    "bytes": 4546,
+    "sha256": "a769b24b480df1a535722988af8c5ffb18338d80a13f21907e55c694b3ab2369"
+  },
+  {
+    "path": "src/main/resources/static/ui/i18n.js",
+    "bytes": 7879,
+    "sha256": "0ca0b282fba4d8b67cd97680887b322eca6a85d5a30849c3dd1571b243c5b580"
+  },
+  {
+    "path": "src/main/resources/static/ui/mini.js",
+    "bytes": 14498,
+    "sha256": "0828f8c49ee00b2a173772e4fcc237d1866e4aec2e6d5cd7d0f78599ca3f9538"
+  },
+  {
+    "path": "src/main/resources/static/ui/queue.js",
+    "bytes": 5272,
+    "sha256": "36658104c7f0938df6fb02bfe17dc946208472abdbc4de0095a374916684663c"
+  },
+  {
+    "path": "src/main/resources/static/ui/schedules.js",
+    "bytes": 1212,
+    "sha256": "ea1bdf74d95f864a06400547f23d8a52a168579d9b1596f044875ace26b075f1"
+  },
+  {
+    "path": "src/main/resources/static/ui/tailwind.css",
+    "bytes": 5603,
+    "sha256": "b7f9854f29e4a8ed5f5dfc99db1cf44ead020b8a93e293077d506526e2180d83"
+  },
+  {
+    "path": "src/main/resources/static/ui/tailwind.input.css",
+    "bytes": 59,
+    "sha256": "cc1a7ad0d019ddb1d32d0ecb588ba0ac26ce41d8625dd6c366348b25f83a28ec"
+  },
+  {
+    "path": "src/main/resources/static/ui/telegram.js",
+    "bytes": 2981,
+    "sha256": "6511fb8e033e5eca704cb166b0f5cb7146a8d2225a72f0cb68411871fe4a1d40"
+  },
+  {
+    "path": "src/main/resources/static/ui/tg.js",
+    "bytes": 1542,
+    "sha256": "66523cf11f99ef4a7d15a37b220dcd6eb7c488a86a3e219ef8b4d97c55f6a28a"
+  },
+  {
+    "path": "src/main/resources/static/ui/fonts/NotoSansKhmer-OFL.txt",
+    "bytes": 4379,
+    "sha256": "cebe68e383ee6acd931f8b173ee33bdcb6d3895ad0deae5272446b0ff95a96dd"
+  },
+  {
+    "path": "src/main/resources/static/ui/locales/en.json",
+    "bytes": 140096,
+    "sha256": "552eade9638876effa9a4fc5f6c8db396ef90c9ab93503c4ce871cbb1bd4773a"
+  },
+  {
+    "path": "src/main/resources/static/ui/locales/km.json",
+    "bytes": 257740,
+    "sha256": "d3347144e88a1d0168b03bfa12845b608e1507566b7f414335fc94840a6b5374"
+  },
+  {
+    "path": "src/main/resources/static/ui/vendor/alpine.js",
+    "bytes": 44758,
+    "sha256": "3ed1eed252488921df65e363d6715deb04d7f92aaedb9e52199fdf73cb1e0ad3"
+  },
+  {
+    "path": "src/main/resources/static/ui/vendor/chart.js",
+    "bytes": 206279,
+    "sha256": "e4cf4d144b222634f2e64ff707cd57b953f8de4b65b231cd5ac6bde114648e4d"
+  },
+  {
+    "path": "src/main/resources/static/ui/vendor/jsqr-LICENSE.txt",
+    "bytes": 11358,
+    "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+  },
+  {
+    "path": "src/main/resources/static/ui/vendor/jsqr.js",
+    "bytes": 256885,
+    "sha256": "bc40c8a15196236b2314db0856f72ca0b49980cd5413b8c852a7349f5fee0859"
+  },
+  {
+    "path": "src/main/resources/static/ui/vendor/lucide.js",
+    "bytes": 357796,
+    "sha256": "3411692820cb8d47543f69496aa25fd603a358f4498046f41c508a5a3342210e"
+  },
+  {
+    "path": "src/main/resources/static/ui/vendor/qrcode.js",
+    "bytes": 56694,
+    "sha256": "18ae399f81182bc9de916e9c77b195df20cc58d6f2d55a62b085a299f1bf1780"
+  },
+  {
+    "path": "src/main/resources/db/migration/h2/V1__identity_and_audit.sql",
+    "bytes": 792,
+    "sha256": "ec45fc7d12e1d74b959f3c180d988ffbd660a4762797153971b293b8dc521260"
+  },
+  {
+    "path": "src/main/resources/db/migration/h2/V2__account_recovery.sql",
+    "bytes": 714,
+    "sha256": "3645080558dc633c4b7ec07302a5dcc20168068b7404aef9e556ad5cb539cea2"
+  },
+  {
+    "path": "src/main/resources/db/migration/mysql/V1__identity_and_audit.sql",
+    "bytes": 748,
+    "sha256": "fd25e13b307efb5b2bac1f25286e62bd018f127504f40cf4539ad9901b6bf8f7"
+  },
+  {
+    "path": "src/main/resources/db/migration/mysql/V2__account_recovery.sql",
+    "bytes": 688,
+    "sha256": "179811a7fbe98d1971af0d3972c8cceb857b9da65bbec9c83a861153724497cb"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/EHospitalManagementApplication.java",
+    "bytes": 417,
+    "sha256": "e465226cb912113b10e96ebc1d63913678ea795250eab24ecbff6fad1443b7c0"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/audit/AuditEvent.java",
+    "bytes": 996,
+    "sha256": "1f53b4333081feedd3b8dd414a33440e869fd5adfe0ac3fca69e24e7ef26928f"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/audit/AuditEventRepository.java",
+    "bytes": 376,
+    "sha256": "0faede9e89bbf8991e97ff28024451124c35a4ef2ff8204e9814e26d0ea9f191"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/audit/AuditReadService.java",
+    "bytes": 816,
+    "sha256": "a2305158f48cc1f053b075504722d98677815d293eab81fed9ca48dc0fd83344"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/audit/AuditService.java",
+    "bytes": 587,
+    "sha256": "f97a43b75e497327db6d1bb44bd372980f3e47a89a29af53240bc0a3ccebdfcc"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/config/DatabaseSafetyConfiguration.java",
+    "bytes": 659,
+    "sha256": "7b87bcc001c9bea70bea32e8caa2ae5f8589c7dc69d0d47d616a0849d5ae6650"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/config/DatabaseSafetyPolicy.java",
+    "bytes": 3572,
+    "sha256": "1f9e8e30b7683c2f2aab245f731858c22b6cbc5692218f5faf08bb7449add8ff"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/AccountService.java",
+    "bytes": 3692,
+    "sha256": "aaa7f5fa5956e031973ebfbe4adc073665efac256fcc40187a139300c0d2ca24"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/AdminBootstrap.java",
+    "bytes": 1802,
+    "sha256": "e1dcd0a5e852f837d06650977f78e24ae594e5de59dc3eed6d5386a0e5ed5085"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/HospitalAuthenticationProvider.java",
+    "bytes": 2393,
+    "sha256": "5b091d95575ed9f4cc896e756e2f14a7de1095a53c64ce51baa11266bcbb90fe"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/HospitalPrincipal.java",
+    "bytes": 953,
+    "sha256": "dd63f3967e5dd4d35dc302a7ba5987ff1a70ac13b5ecf538157bd1cdb0060aec"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/HospitalUser.java",
+    "bytes": 2352,
+    "sha256": "56ae653cdfd1a5d3818d4fd937ad5ff36bce0b87d4cf6859bf3f30f6746a69ad"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/HospitalUserRepository.java",
+    "bytes": 1591,
+    "sha256": "920acbcc495653cd4d5fb9866591b60b0d5714d852808833341c8a50cae36213"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/LoginThrottle.java",
+    "bytes": 2033,
+    "sha256": "4bf16f205689076bfed927e72eae3eff7a17caccd9c90f8a2aae83930e0148fc"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/PasswordChangeForm.java",
+    "bytes": 804,
+    "sha256": "ba4da2ddb1bc71201d57d86e9ccbe3608712176b1665bdf88787d6e3fb4476b0"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/PasswordPolicy.java",
+    "bytes": 454,
+    "sha256": "be41302f3b6f53be023acdca03ccda5b1674e442effd1e2ac7277d7b7912a364"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/PasswordRecoveryService.java",
+    "bytes": 3127,
+    "sha256": "1c658d56e27347395a0a55d1cf7f47a090480802859d731232e2e0ddc33fd0db"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/PasswordResetToken.java",
+    "bytes": 985,
+    "sha256": "392b722683ef96ae474ab08c7998e15d6c42ee397ae360bbcf49caf7502fa3d6"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/PasswordResetTokenRepository.java",
+    "bytes": 709,
+    "sha256": "00f9adaeb8e79102e3bef5d0e7f1e05d5391c72be81e31b6ad49260b344467d7"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/Permission.java",
+    "bytes": 119,
+    "sha256": "2ad9067e152bd5042144a87fc7bb4ceaa0775217f8bceef3fa4d2829f5d26e66"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/ProfileForm.java",
+    "bytes": 531,
+    "sha256": "fd26f879d7d1cf4c7c68b88869f026408f6a3adb77c16cce80618d895f7521ac"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/RecoveryDispatcher.java",
+    "bytes": 1617,
+    "sha256": "18fccc7eecb24f1012705e6def5da27a266e615dac096157a9f2dd3b211262d7"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/ResetDelivery.java",
+    "bytes": 156,
+    "sha256": "62dbd74ef01102e45ce44068d5cdb7878db50ec2875731454f93f583b83515f0"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/Role.java",
+    "bytes": 428,
+    "sha256": "8f0b218a911a19d8386341e1272303957a9106806fdccade141851f932ed1661"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/SecurityConfiguration.java",
+    "bytes": 4148,
+    "sha256": "69574a20bbb0ebbf3ab8d533731569645730147e98c8e22b42a75f4ff8b1e4da"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/SessionRevocationService.java",
+    "bytes": 679,
+    "sha256": "031505f12f3cbc20f5349cd617b6823d842e8faa64c0b9bd52e0b3a1d1621dce"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/SessionValidityFilter.java",
+    "bytes": 2356,
+    "sha256": "d7843f802f4bab338f0483738154f9ae7fb9d9544a605d4b4756f31b799b0931"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/SmtpResetDelivery.java",
+    "bytes": 3396,
+    "sha256": "889ca0276eb82b6e7774f7d7e88ed1e44ddf97f7a52507fa1a045334f70cb513"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/TokenSecrets.java",
+    "bytes": 874,
+    "sha256": "73cc652449d9eec50a0500b154eb80c0aca945a99919088d93fc65d584382d33"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/UserAdministrationService.java",
+    "bytes": 4059,
+    "sha256": "585efd7e82bdb039dad76fa4d802f3e76ff606f24f063ce12ed52092c6feec6b"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/security/UserForm.java",
+    "bytes": 1231,
+    "sha256": "ef0364910e6d2bb3ed191effd8d0b852a9b3d5f59ab39a3f6a401d22d29c0f44"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/web/AccountController.java",
+    "bytes": 3005,
+    "sha256": "6fe50862eb9ba5aeb327008ce106a887dc6f7f8873aa1eff09a7158e25f039f9"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/web/GlobalExceptionHandler.java",
+    "bytes": 2363,
+    "sha256": "35932fe8345f916f23826cf80a57e6282e627ae42e66f87b22f003cc6eac36d1"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/web/RecordNotFoundException.java",
+    "bytes": 113,
+    "sha256": "86859d490d7385f958b305abc814a2726af6a716c753c7634b537424e9b89326"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/web/RecoveryController.java",
+    "bytes": 3312,
+    "sha256": "9990601dcbde31094b92ad0a76bd1083a863228049a274e34144d5ad2ca1d830"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/web/SharedModelAdvice.java",
+    "bytes": 868,
+    "sha256": "f7fbbbe52257097758263b1e50afcf299b949e648204802614ec78098bc6d580"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/web/UserAdministrationController.java",
+    "bytes": 3012,
+    "sha256": "ee175d4327bce47f827b278eb1b29e3ce03149e60bfc62d5322abeabaf549e80"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/web/WorkspaceController.java",
+    "bytes": 1965,
+    "sha256": "199b6978e9e74a0f614e7e1f93561d3e565e3a46bb338b55f75dcb83deb87ac4"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/controller/CareController.java",
+    "bytes": 16339,
+    "sha256": "7353fe420d3bcf9413c5c0c81fa14d9d4978fb4938be9c0b773aa721380bcd7c"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/controller/DemoAccess.java",
+    "bytes": 2053,
+    "sha256": "8bedaee3f30bd3fe1032ea5b390c699d3136a7f6060733c77575d06ae8fc8d96"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/controller/DoctorScheduleController.java",
+    "bytes": 1885,
+    "sha256": "8b006a7945328d9e937016287c20482e8128f8125100f22e6ccce15cb52d65bb"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/controller/ErrorPageController.java",
+    "bytes": 1024,
+    "sha256": "ae0eec9f8c3f13451ad23b44276a5f8a77e6e562b9976bdad94bdebcd0f56064"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/controller/HospitalApi.java",
+    "bytes": 8586,
+    "sha256": "d1625dc4a49fae58e3e38a86a99fd3c6f65571e822406368b9a4cbce9dcb3ffb"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/controller/HospitalBotController.java",
+    "bytes": 1266,
+    "sha256": "6fce6589bbf3f27f7e1864859f06aa8229dd821b10d1621a725c9932b14c6ccf"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/controller/NavigationAdvice.java",
+    "bytes": 8212,
+    "sha256": "33f4110a48bf96d404858e049e94df9607e2f885fe3fd3ce4f06b4b738c65285"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/controller/TelegramController.java",
+    "bytes": 6514,
+    "sha256": "8b9d9d757bf53a4528e6b54b8e7f602578459c2077c4b39a37c3ea4dad9c3930"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/controller/WorkspaceController.java",
+    "bytes": 9836,
+    "sha256": "7c1f92f8e20508cff404936629bc5612ea0c69e5736d0c15ecde1941a94df46d"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/data/ModuleCatalog.java",
+    "bytes": 28669,
+    "sha256": "eb1f0372dbd01c9ac91e5030ff2f3884a56641d4a2ddf43e39354d31e69567ec"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/model/FieldDefinition.java",
+    "bytes": 211,
+    "sha256": "8b7be209e38a7647d381e6c630ac2643e6f570a8598faaab24e1803166224e39"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/model/ModuleDefinition.java",
+    "bytes": 368,
+    "sha256": "2dcc3f449c5be6bdf7a4b74538c9908121e841d72648539550729187df411cad"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/model/RecordPage.java",
+    "bytes": 222,
+    "sha256": "6c8621568bb82647403323ba96c204e61a55d389a4923e15852f046ab4a7f240"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/service/CareNotificationBridge.java",
+    "bytes": 524,
+    "sha256": "05fecd469e56e8d717977f704b096d12850115fdec5b8abdd33b1779134a0da9"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/service/CsvReader.java",
+    "bytes": 2095,
+    "sha256": "468872279e976df5d9a8585725647a9c8b3128250a5d93945cb9b48729676a76"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/service/HospitalBotService.java",
+    "bytes": 7301,
+    "sha256": "4f6f3908b996e7aaa8225807100d42db6821c98ddebce3a43dce970d854514e7"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/service/HospitalService.java",
+    "bytes": 3388,
+    "sha256": "e64f42e2d5e73ba7cffe7898c3c2d7d47f51e6a676c411d8e17056781a80600e"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/service/InMemoryHospitalService.java",
+    "bytes": 108609,
+    "sha256": "fd74bb6f9978120b21634ae85bdce9e2e9a8925c641eaae52f79f66b98d30df3"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/service/TelegramAccessService.java",
+    "bytes": 12275,
+    "sha256": "29ce5dfc3b6faf3ae2d420ca41fba7d4be39678248aa10c5db1dda7f73e02911"
+  },
+  {
+    "path": "src/main/java/com/example/e_hospital/management/prototype/service/TelegramInitDataVerifier.java",
+    "bytes": 3815,
+    "sha256": "59fd8fbbf18a14721cd36dd0631d1e070052ba26f80e8a96da550ebbf4c8b69d"
+  },
+  {
+    "path": "scripts/browser-test.cjs",
+    "bytes": 17499,
+    "sha256": "1e6adf0a07691e81aa21fd6f179c16df9d82624c6f9031dcd3a7b99adff5e609"
+  },
+  {
+    "path": "scripts/care-browser-test.cjs",
+    "bytes": 14100,
+    "sha256": "8a8cc6c29ef0e9fd3cc7e24f5f8dcec954273f5115fe1e9c2d81681780dab3ef"
+  },
+  {
+    "path": "scripts/care-smoke.cjs",
+    "bytes": 1009,
+    "sha256": "b00a27be0c41aa4d4a44082c7c28d4be44745483d1b216bf1737cd5d05d7da4f"
+  },
+  {
+    "path": "scripts/check-i18n.cjs",
+    "bytes": 2079,
+    "sha256": "d0f5b6eb21e62418d63d926b34f0b5732961d5a587c1cda06997f1c56a1264c4"
+  },
+  {
+    "path": "scripts/journey-test.cjs",
+    "bytes": 18629,
+    "sha256": "a5d630974de3ad53f4f093679111c988dd7800c9a4302e306caf1f0e3ce5b9ba"
+  },
+  {
+    "path": "scripts/qr-mini-test.cjs",
+    "bytes": 11200,
+    "sha256": "575b880c41d950e1288403ea297a809c0de223f0a7ec3c4a8eabe2b3f37f6467"
+  },
+  {
+    "path": "scripts/requirements-ui-test.cjs",
+    "bytes": 5646,
+    "sha256": "922ac8b5d5f623f25c393b9075bc1a3a4ef155ad1964eac2f66c0e9eaea2d308"
+  },
+  {
+    "path": "scripts/vendor-assets.cjs",
+    "bytes": 609,
+    "sha256": "f8da3e54e460a56f65b3598ae98528901941dce33bc31cf9e6c9f06c6845cd7d"
+  },
+  {
+    "path": "docs/accounts-and-security.md",
+    "bytes": 8662,
+    "sha256": "a148787d4560841e08d43fe5cd08b2e776dba8311dd7867cabbeb25293a4a5b1"
+  },
+  {
+    "path": "docs/full-system-audit.md",
+    "bytes": 13943,
+    "sha256": "f542de2e60ad617b80c03ffa7af4a1776f8176fd759b2da6e939407995c1cfe7"
+  },
+  {
+    "path": "docs/historical-database-readme.md",
+    "bytes": 9885,
+    "sha256": "2befb03e4733d608d062751a206e5f24ff2a01f4ad7a7d5a05cb7b85c3a6b862"
+  },
+  {
+    "path": "docs/priority-1-verification.md",
+    "bytes": 6941,
+    "sha256": "441ed44b3733d1d13069e056305f80720090eb474ff89f24308e28bdf62d4268"
+  },
+  {
+    "path": "docs/priority-2-review.md",
+    "bytes": 13200,
+    "sha256": "8484ca897614119cce6390f99b0525341683c530e9881cc721309b846530df4c"
+  },
+  {
+    "path": "docs/priority-2-verification.md",
+    "bytes": 9051,
+    "sha256": "d488f436ff2318c74d8ce531219c48ac31895474d987ff7112dd13b27a82c3e8"
+  },
+  {
+    "path": "docs/qa-results.md",
+    "bytes": 7778,
+    "sha256": "4f66841e99b4bd82fe53166a127826210a7674bf7b208b8cefdca2aec08043fb"
+  },
+  {
+    "path": "docs/requirements-gap-analysis.md",
+    "bytes": 5930,
+    "sha256": "f10a582fe37f7b8d66ca0edb6c241ef82bc15bf505dad29c16e5ca4292a9dfec"
+  },
+  {
+    "path": "docs/requirements-implementation-report.md",
+    "bytes": 13093,
+    "sha256": "f13d275c455f1215c90a1f0ff7a9ac9b779d1ac14e3ee06f33987e2fce56a455"
+  },
+  {
+    "path": "docs/requirements-traceability.md",
+    "bytes": 13258,
+    "sha256": "789b19dc72af499344b3c1c9364112df8eca20adfcac2ee32868276d1acd3f41"
+  },
+  {
+    "path": "docs/telegram-mini-app-setup.md",
+    "bytes": 13142,
+    "sha256": "2a8da4ad7656421ebdec37832e9b6b4f5a8eadf10decf595a83ede9943c728ff"
+  },
+  {
+    "path": "docs/ui-ux-audit.md",
+    "bytes": 5769,
+    "sha256": "07ab850f9e2b1e5e92780cc3521a8aaf84039f1b120fa6c6d2ceb3a4b9b3293d"
+  },
+  {
+    "path": "docs/ui-ux-upgrade-report.md",
+    "bytes": 17483,
+    "sha256": "31a3faf50df128bbc985764d48be12d02924ee868059453aa39b2a3d2befbeb1"
+  },
+  {
+    "path": "docs/upgrade-gap-analysis.md",
+    "bytes": 2498,
+    "sha256": "bfdfceba6878dd4b1549d6c0054952a9685a819441359ac6808a6c0204c1fe10"
+  },
+  {
+    "path": "docs/upgrade-report.md",
+    "bytes": 11385,
+    "sha256": "2eda4e7b6d8378462cbf9c621a0ed035346f957c58497fcc3efae8ed524cddde"
+  },
+  {
+    "path": "docs/requirements/pdf-extracted.txt",
+    "bytes": 24703,
+    "sha256": "1ba556978f43937694ab6db7e5554c399b498eea7e409dcdfea7b4905ca135fc"
+  },
+  {
+    "path": "docs/screenshots/requirements-after/results.json",
+    "bytes": 4950,
+    "sha256": "b37d540d42a566571423ecd2b351e2c270d374c38076aca525a2ee0b3bb0064a"
+  },
+  {
+    "path": "docs/screenshots/requirements-before/results.json",
+    "bytes": 4339,
+    "sha256": "ee88d9afb7cc5f7c99a62b87d46f609f87a3e42e5fc6c31da1e20931653dba56"
+  },
+  {
+    "path": "docs/requirements/test-results/browser-report.json",
+    "bytes": 115,
+    "sha256": "bb04da085b19a793fb9da00fc0affc88e3eb5ee8c153ad430b77ca78ebb5986c"
+  },
+  {
+    "path": "docs/requirements/test-results/care-browser-report.json",
+    "bytes": 90,
+    "sha256": "24c0fd38092fd96ee7e7a27b59a5782365ea52cf04128f816a288c2883d5efc5"
+  },
+  {
+    "path": "docs/requirements/test-results/i18n-report.json",
+    "bytes": 82,
+    "sha256": "d9d018cf437d77315334ffc7dfffd08f4a2d04fa35e3b2a0ab945e0c44e3ebc7"
+  },
+  {
+    "path": "docs/requirements/test-results/java-tests.json",
+    "bytes": 1913,
+    "sha256": "6aa4fb8994838de0fe5445cc28165aeaefdb1a1d8d568ca98a569e4091cec90d"
+  },
+  {
+    "path": "docs/requirements/test-results/journey-report.json",
+    "bytes": 12096,
+    "sha256": "4d7200ceadef0ad2ce8b8b053b9a6a9c3f92d8b43011c31fff53dfa54db9497a"
+  },
+  {
+    "path": "docs/requirements/test-results/qr-mini-report.json",
+    "bytes": 1710,
+    "sha256": "58ec622469a6249f8c718b0aff8059e9f62abe21b69ac0689e47550784e2c655"
+  }
+]

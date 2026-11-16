@@ -4,7 +4,7 @@
 <body class="clinic-page" x-data="checkinDesk()">
 <script th:inline="javascript">window.DESK={role:/*[[${role}]]*/ ''};</script>
 <script defer src="/ui/vendor/qrcode.js"></script><script defer src="/ui/vendor/jsqr.js"></script><script defer src="/ui/checkin.js"></script><script defer src="/ui/vendor/alpine.js"></script>
-<header th:replace="~{ui/fragments/clinic :: top('checkin')}"></header>
+<div class="shell" x-data="shellState()" :class="{'sidebar-compact':compact,'nav-open':mobileNav}"><div class="mobile-nav-backdrop" x-cloak x-show="mobileNav" @click="mobileNav=false"></div><aside th:replace="~{ui/fragments/shell :: sidebar}"></aside><div class="app-main"><header th:replace="~{ui/fragments/shell :: topbar('Front desk','Check-In Desk')}"></header>
 <main class="clinic-shell">
   <div><h1 style="font-size:26px;font-weight:700;margin:0">Check-In Desk</h1><p class="muted" style="margin:2px 0 0">Scan the patient's appointment QR, or check in from today's list. Each code works once.</p></div>
   <div class="alert-box error" role="alert" x-show="error" x-text="error" x-cloak></div>
@@ -60,5 +60,6 @@
   </div>
   <div class="poster" aria-hidden="true"><h1>CarePlus General Hospital</h1><p>Arrived for your appointment? Scan to check in.</p><div x-html="Clinic.qrSvg(arrivalLink,420)"></div><p>មកដល់សម្រាប់ការណាត់ជួប? ស្កេនដើម្បីបញ្ជាក់ការមកដល់។</p><p class="mono" x-text="'Code: '+arrival.code+' · '+arrival.validOn"></p></div>
 </main>
+</div></div>
 </body>
 </html>

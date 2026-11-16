@@ -133,7 +133,8 @@ public class InMemoryHospitalService implements HospitalService {
         result.put("_actions",String.join("|",allowed(module,result)));
         return result;
     }
-    @Override public synchronized RecordPage list(String module,String search,String status,String filter,String from,String to,int page,int size) {
+    @Override public synchronized RecordPage list(String module,String search,String status,String filter,String from,String to,int page,int size) {return list(module,search,status,filter,from,to,page,size,"","asc");}
+    @Override public synchronized RecordPage list(String module,String search,String status,String filter,String from,String to,int page,int size,String sort,String dir) {
         catalog.get(module); size=Math.max(1,Math.min(size,100)); page=Math.max(1,page);
         List<Map<String,String>> rows=new ArrayList<>(); Map<String,Long> counts=new LinkedHashMap<>();
         for(var r:store.get(module).values()) {
@@ -146,6 +147,14 @@ public class InMemoryHospitalService implements HospitalService {
             if(!status.isBlank()&&!status.equals(row.get("status"))) continue;
             rows.add(row);
         }
+        if(sort!=null&&!sort.isBlank()&&sort.matches("[A-Za-z]{1,40}")){
+            // Sort by the label shown in the table for reference fields; numbers compare numerically.
+            String key=catalog.get(module).fields().stream().anyMatch(f->f.key().equals(sort)&&f.type().equals("ref"))?sort+"Label":sort;
+            Comparator<Map<String,String>> cmp=(a,b)->{String x=Objects.toString(a.get(key),""),y=Objects.toString(b.get(key),"");
+                try{return Double.compare(Double.parseDouble(x),Double.parseDouble(y));}catch(NumberFormatException e){return x.compareToIgnoreCase(y);}};
+            if(key.equals("date"))cmp=Comparator.comparing((Map<String,String> r)->Objects.toString(r.get("date"),"")+" "+Objects.toString(r.get("time"),""));
+            rows.sort("desc".equalsIgnoreCase(dir)?cmp.reversed():cmp);
+        }
         int pages=Math.max(1,(int)Math.ceil(rows.size()/(double)size));page=Math.min(page,pages);
         int start=Math.min(rows.size(),(page-1)*size);
         return new RecordPage(rows.subList(start,Math.min(rows.size(),start+size)),rows.size(),page,pages,counts);
@@ -155,6 +164,7 @@ public class InMemoryHospitalService implements HospitalService {
         if(module.equals("audit")) fail("Audit events are read-only.");
         var m=catalog.get(module); boolean create=id==null; Map<String,String> old=create?null:raw(module,id);
         if(!create && !Objects.equals(old.get("version"),values.get("version"))) throw new ResponseStatusException(HttpStatus.CONFLICT,"This record changed. Reopen it before saving.");
+        if(!create&&old.containsKey("encounter")&&values.containsKey("encounter")&&!Objects.equals(old.get("encounter"),values.get("encounter")))fail("The encounter of a linked record cannot be changed.");
         Map<String,String> row=new LinkedHashMap<>();
         for(var f:m.fields()) {
             String value=values.getOrDefault(f.key(),"").strip();
@@ -218,13 +228,47 @@ public class InMemoryHospitalService implements HospitalService {
         if(create&&module.equals("appointments")&&!"Follow-up".equals(row.get("type")))emit("appointment",row.get("patient"),"date",row.get("date"),"time",row.get("time"));
         return display(module,row);
     }
+    private final Map<String,Map<String,String>> scheduleOverrides=new HashMap<>();
+    @Override public synchronized Map<String,String> doctorSchedule(String doctor,String date){
+        var clinician=raw("doctors",doctor);LocalDate day;
+        try{day=LocalDate.parse(date);}catch(Exception ex){fail("Choose a valid date.");return Map.of();}
+        var out=new LinkedHashMap<>(scheduleOverrides.getOrDefault(doctor+"/"+date,Map.of("doctor",doctor,"date",date,"startTime","09:00","endTime","17:00","breakStart","12:00","breakEnd","14:00","interval","15","location","Outpatient department","closed",String.valueOf(day.getDayOfWeek().getValue()>5))));
+        out.put("doctorLabel",clinician.get("name"));out.put("version",out.getOrDefault("version","0"));return out;
+    }
+    private List<String> scheduledSlots(String doctor,String date){
+        var s=doctorSchedule(doctor,date);if("true".equals(s.get("closed"))||raw("doctors",doctor).get("status").equals("On leave"))return List.of();
+        var slots=new ArrayList<String>();LocalTime end=LocalTime.parse(s.get("endTime"));int interval=Integer.parseInt(s.get("interval"));
+        for(int minute=LocalTime.parse(s.get("startTime")).toSecondOfDay()/60;minute+interval<=end.toSecondOfDay()/60;minute+=interval){
+            LocalTime time=LocalTime.of(minute/60,minute%60),finish=time.plusMinutes(interval);boolean overlaps=!s.get("breakStart").isBlank()&&time.isBefore(LocalTime.parse(s.get("breakEnd")))&&finish.isAfter(LocalTime.parse(s.get("breakStart")));
+            if(!overlaps)slots.add(time.toString());
+        }return slots;
+    }
+    @Override public synchronized Map<String,String> saveDoctorSchedule(Map<String,String> values,String actor){
+        String doctor=required(values,"doctor"),date=required(values,"date");raw("doctors",doctor);var previous=doctorSchedule(doctor,date);
+        if(!previous.get("version").equals(values.get("version")))throw new ResponseStatusException(HttpStatus.CONFLICT,"This schedule changed. Reload before saving.");
+        var s=new LinkedHashMap<String,String>();s.put("doctor",doctor);s.put("date",date);
+        try{
+            if(LocalDate.parse(date).isBefore(LocalDate.now()))fail("Choose today or a future date.");
+            LocalTime start=LocalTime.parse(required(values,"startTime")),end=LocalTime.parse(required(values,"endTime"));if(!start.isBefore(end))fail("Schedule end must be after start.");
+            if(start.getSecond()!=0||end.getSecond()!=0)fail("Use schedule times in hours and minutes.");
+            int interval=Integer.parseInt(required(values,"interval"));if(interval<5||interval>60||interval%5!=0)fail("Slot length must be 5 to 60 minutes in steps of 5.");
+            String bs=values.getOrDefault("breakStart",""),be=values.getOrDefault("breakEnd","");
+            if(!bs.isBlank()||!be.isBlank()){LocalTime b1=LocalTime.parse(bs),b2=LocalTime.parse(be);if(!b1.isBefore(b2)||b1.isBefore(start)||b2.isAfter(end))fail("Break must be inside the schedule.");}
+            for(String k:List.of("startTime","endTime","interval","location"))s.put(k,required(values,k));s.put("breakStart",bs);s.put("breakEnd",be);s.put("closed",String.valueOf("true".equals(values.get("closed"))));
+        }catch(DateTimeException|NumberFormatException ex){fail("Enter valid schedule dates and times.");}
+        s.put("version",String.valueOf(Integer.parseInt(previous.get("version"))+1));String key=doctor+"/"+date;var old=scheduleOverrides.put(key,s);
+        try{var slots=scheduledSlots(doctor,date);if(store.get("appointments").values().stream().anyMatch(a->doctor.equals(a.get("doctor"))&&date.equals(a.get("date"))&&!List.of("Completed","Cancelled","No-Show").contains(a.get("status"))&&!slots.contains(a.get("time"))))fail("Existing appointments conflict with this schedule. Reschedule them first.");}
+        catch(RuntimeException ex){if(old==null)scheduleOverrides.remove(key);else scheduleOverrides.put(key,old);throw ex;}
+        audit(actor,"Schedule updated","doctors",doctor);return doctorSchedule(doctor,date);
+    }
     @Override public synchronized List<String> availableSlots(String doctor,String date) {
         var d=raw("doctors",doctor);LocalDate day;try{day=LocalDate.parse(date);}catch(DateTimeParseException e){fail("Choose a valid date.");return List.of();}
-        if(day.isBefore(LocalDate.now())||day.getDayOfWeek().getValue()>5||d.get("status").equals("On leave"))return List.of();
-        var slots=new ArrayList<String>();for(int hour=9;hour<17;hour++){if(hour==12||hour==13)continue;for(int minute=0;minute<60;minute+=15){String slot=String.format(Locale.ROOT,"%02d:%02d",hour,minute);if(store.get("appointments").values().stream().noneMatch(a->doctor.equals(a.get("doctor"))&&date.equals(a.get("date"))&&slot.equals(a.get("time"))&&!List.of("Completed","Cancelled").contains(a.get("status"))))slots.add(slot);}}
+        if(day.isBefore(LocalDate.now()))return List.of();
+        var slots=new ArrayList<String>();for(String slot:scheduledSlots(doctor,date))if(store.get("appointments").values().stream().noneMatch(a->doctor.equals(a.get("doctor"))&&date.equals(a.get("date"))&&slot.equals(a.get("time"))&&!List.of("Completed","Cancelled","No-Show").contains(a.get("status"))))slots.add(slot);
         int capacity=(int)number(raw("departments",d.get("department")),"capacity");long booked=store.get("appointments").values().stream().filter(a->d.get("department").equals(a.get("department"))&&date.equals(a.get("date"))&&!List.of("Cancelled","Completed").contains(a.get("status"))).count();return booked>=capacity?List.of():List.copyOf(slots);
     }
     private void checkSlot(Map<String,String> row,String except) {
+        if(scheduleOverrides.containsKey(row.get("doctor")+"/"+row.get("date"))&&!scheduledSlots(row.get("doctor"),row.get("date")).contains(row.get("time")))fail("Choose an available time in the doctor's configured schedule.");
         for(var existing:store.get("appointments").values()) if(!existing.get("id").equals(except)&&!List.of("Cancelled","Completed").contains(existing.get("status"))&&existing.get("doctor").equals(row.get("doctor"))&&existing.get("date").equals(row.get("date"))&&existing.get("time").equals(row.get("time"))) fail("This doctor already has an appointment at that time.");
     }
     @Override public synchronized void delete(String module,String id,String actor) {
@@ -466,7 +510,7 @@ public class InMemoryHospitalService implements HospitalService {
         }
         Map<String,String> result=visit;
         switch(action) {
-            case "start" -> {if(!visit.get("status").equals("Waiting"))fail("Consultation is already started.");visit.put("status","In consultation");for(var q:store.get("queues").values())if(encounter.equals(q.get("encounter"))&&!List.of("Completed","Cancelled","Transferred").contains(q.get("status"))){q.put("status","In service");q.put("station","Consultation");}}
+            case "start" -> {if(!visit.get("status").equals("Waiting"))fail("Consultation is already started.");visit.put("status","In consultation");for(var q:store.get("queues").values())if(encounter.equals(q.get("encounter"))&&List.of("Registration","Triage","Consultation","Doctor review").contains(q.getOrDefault("station","Consultation"))&&List.of("Waiting","Called").contains(q.get("status"))){q.put("status","In service");q.put("station","Consultation");}}
             case "queue" -> {
                 var q=raw("queues",required(values,"queue"));if(!encounter.equals(q.get("encounter")))fail("Queue does not belong to this encounter.");
                 String next=required(values,"status"),old=q.get("status");
@@ -666,5 +710,136 @@ public class InMemoryHospitalService implements HospitalService {
     }
     @Override public synchronized List<Map<String,String>> checkInHistory(String id){
         return checkIns.stream().filter(c->id==null||id.isBlank()||id.equals(c.get("appointment"))||id.equals(c.get("patient"))).limit(50).map(Map::copyOf).toList();
+    }
+
+    // ---- Role dashboards ------------------------------------------------------------------------------------------
+    private List<Map<String,String>> rows(String module){return store.get(module).values().stream().map(r->display(module,r)).toList();}
+    private static Map<String,Object> tile(String label,Object value,String hint,String href,String tone){var m=new LinkedHashMap<String,Object>();m.put("label",label);m.put("value",value);m.put("hint",hint);m.put("href",href);m.put("tone",tone);return m;}
+    private static Map<String,String> item(String title,String detail,String status,String href){var m=new LinkedHashMap<String,String>();m.put("title",title);m.put("detail",detail);m.put("status",status);m.put("href",href);return m;}
+    private static long count(List<Map<String,String>> list,String status){return list.stream().filter(r->status.equals(r.get("status"))).count();}
+    private Map<String,Long> byStatus(List<Map<String,String>> list,List<String> order){var m=new LinkedHashMap<String,Long>();for(String s:order)m.put(s,count(list,s));return m;}
+    private long waitMinutes(Map<String,String> q){try{return java.time.Duration.between(LocalDateTime.parse(q.get("queuedAt")),LocalDateTime.now()).toMinutes();}catch(Exception e){return 0;}}
+
+    @Override public synchronized Map<String,Object> roleDashboard(String role,String doctor) {
+        String today=LocalDate.now().toString();var out=new LinkedHashMap<String,Object>();out.put("role",role);out.put("date",today);
+        var appts=rows("appointments");var visits=rows("visits");var queues=rows("queues");var labs=rows("laboratory");var imaging=rows("imaging");
+        var todayAppts=appts.stream().filter(a->today.equals(a.get("date"))).sorted(Comparator.comparing(a->Objects.toString(a.get("time"),""))).toList();
+        var activeQueue=queues.stream().filter(q->List.of("Waiting","Called","In service","On hold").contains(q.get("status"))).toList();
+        var tiles=new ArrayList<Map<String,Object>>();var lists=new LinkedHashMap<String,Object>();var actions=new ArrayList<Map<String,String>>();
+        switch(role){
+            case "Imaging Staff" -> {
+                tiles.add(tile("Imaging requests",count(imaging,"Requested"),"Requested","/imaging?status=Requested","blue"));
+                tiles.add(tile("Scheduled",count(imaging,"Scheduled"),"Scheduled","/imaging?status=Scheduled","teal"));
+                tiles.add(tile("In progress",count(imaging,"In progress"),"In progress","/imaging?status=In%20progress","amber"));
+                tiles.add(tile("Reported",count(imaging,"Reported"),"Awaiting approval","/imaging?status=Reported","rose"));
+                lists.put("worklist",imaging.stream().filter(r->!List.of("Approved","Cancelled").contains(r.get("status"))).limit(10).map(r->item(r.get("id")+" · "+r.get("patientLabel"),r.get("name"),r.get("status"),"/imaging/"+r.get("id"))).toList());
+                out.put("byStatus",byStatus(imaging,List.of("Requested","Scheduled","In progress","Reported","Reviewed","Approved")));
+                actions.add(item("Imaging worklist","","","/imaging"));actions.add(item("Open queue","","","/care/queue"));
+            }
+            case "Doctor" -> {
+                var mine=todayAppts.stream().filter(a->doctor.equals(a.get("doctor"))).toList();
+                var waiting=activeQueue.stream().filter(q->doctor.equals(q.get("doctor"))&&q.get("status").equals("Waiting")&&stationGroup(q).equals("Consultation")).toList();
+                var current=visits.stream().filter(v->doctor.equals(v.get("doctor"))&&v.get("status").equals("In consultation")).findFirst().orElse(null);
+                var openVisits=visits.stream().filter(v->doctor.equals(v.get("doctor"))&&List.of("Waiting","In consultation").contains(v.get("status"))).map(v->v.get("id")).collect(java.util.stream.Collectors.toSet());
+                var notes=careDocuments.values().stream().filter(d->d.get("kind").equals("note")&&d.get("status").equals("Draft")&&doctor.equals(d.get("doctor"))).toList();
+                var noNote=visits.stream().filter(v->doctor.equals(v.get("doctor"))&&v.get("status").equals("In consultation")&&careDocuments.values().stream().noneMatch(d->d.get("kind").equals("note")&&v.get("id").equals(d.get("encounter")))).toList();
+                var results=new ArrayList<Map<String,String>>();
+                for(var r:labs)if(doctor.equals(r.get("doctor"))&&List.of("Result entered","Approved").contains(r.get("status"))&&!"true".equals(r.get("reviewedByDoctor")))results.add(r);
+                for(var r:imaging)if(doctor.equals(r.get("doctor"))&&List.of("Reported","Approved").contains(r.get("status"))&&!"true".equals(r.get("reviewedByDoctor")))results.add(r);
+                var certDrafts=careDocuments.values().stream().filter(d->d.get("kind").equals("certificate")&&d.get("status").equals("Draft")&&doctor.equals(d.get("doctor"))).toList();
+                var upcoming=appts.stream().filter(a->doctor.equals(a.get("doctor"))&&a.get("date")!=null&&a.get("date").compareTo(today)>0&&List.of("Scheduled","Confirmed").contains(a.get("status"))).sorted(Comparator.comparing((Map<String,String> a)->a.get("date")).thenComparing(a->Objects.toString(a.get("time"),""))).limit(6).toList();
+                tiles.add(tile("Today's appointments",mine.size(),mine.stream().filter(a->a.get("encounter")!=null).count()+" checked in","/appointments?doctor="+doctor,"blue"));
+                tiles.add(tile("Patients waiting",waiting.size(),waiting.isEmpty()?"Queue is clear":"Longest wait "+waiting.stream().mapToLong(this::waitMinutes).max().orElse(0)+" min","/care/queue","amber"));
+                tiles.add(tile("Pending clinical notes",notes.size()+noNote.size(),"Drafts and visits without a note","/care/tasks","teal"));
+                tiles.add(tile("Results to review",results.size(),"Laboratory and imaging","/care/tasks","rose"));
+                if(current!=null)out.put("current",item(current.get("patientLabel"),current.get("id")+" · "+Objects.toString(current.get("name"),""),current.get("status"),"/care/patients/"+current.get("patient")+"/encounters/"+current.get("id")));
+                out.put("next",waiting.stream().min(Comparator.<Map<String,String>>comparingInt(q->List.of("Emergency","Urgent","Normal").indexOf(q.getOrDefault("priority","Normal"))).thenComparing(q->Objects.toString(q.get("queuedAt"),""))).map(q->item(q.get("patientLabel"),q.get("name")+" · "+waitMinutes(q)+" min",q.getOrDefault("priority","Normal"),"/care/queue")).orElse(null));
+                lists.put("schedule",mine.stream().map(a->item(a.get("time")+" · "+a.get("patientLabel"),a.get("name")+" · "+a.get("arrivalStatus"),a.get("encounter")!=null?visits.stream().filter(v->v.get("id").equals(a.get("encounter"))).map(v->v.get("status")).findFirst().orElse(a.get("status")):a.get("status"),"/care/appointments/"+a.get("id"))).toList());
+                var tasks=new ArrayList<Map<String,String>>();
+                for(var v:noNote)tasks.add(item("Write clinical note · "+v.get("patientLabel"),v.get("id")+" is in consultation without a note","Note","/care/patients/"+v.get("patient")+"/encounters/"+v.get("id")+"?tab=note"));
+                for(var d:notes)tasks.add(item("Sign clinical note · "+Objects.toString(store.get("patients").getOrDefault(d.get("patient"),Map.of()).get("name"),d.get("patient")),d.get("id")+" · draft v"+d.get("version"),"Draft","/care/patients/"+d.get("patient")+"/encounters/"+d.get("encounter")+"?tab=note"));
+                for(var r:results)tasks.add(item("Review result · "+r.get("patientLabel"),r.get("id")+" · "+r.get("name"),r.get("status"),r.get("encounter")!=null?"/care/patients/"+r.get("patient")+"/encounters/"+r.get("encounter")+"?tab="+(r.get("id").startsWith("LAB")?"lab":"imaging"):"/"+(r.get("id").startsWith("LAB")?"laboratory":"imaging")+"/"+r.get("id")));
+                for(var d:certDrafts)tasks.add(item("Issue certificate · "+Objects.toString(store.get("patients").getOrDefault(d.get("patient"),Map.of()).get("name"),d.get("patient")),d.get("id")+" · "+d.get("template"),"Draft","/care/patients/"+d.get("patient")+"/encounters/"+d.get("encounter")+"?tab=cert"));
+                lists.put("tasks",tasks);
+                lists.put("upcoming",upcoming.stream().map(a->item(a.get("date")+" "+a.get("time")+" · "+a.get("patientLabel"),a.get("name"),a.get("status"),"/care/appointments/"+a.get("id"))).toList());
+                actions.add(item("Open my queue","","","/care/queue"));actions.add(item("My appointments","","","/appointments?doctor="+doctor));actions.add(item("Medical certificates","","","/care/certificates"));actions.add(item("Doctor Mini App","","","/mini/doctor"));
+            }
+            case "Receptionist" -> {
+                var awaiting=todayAppts.stream().filter(a->a.get("encounter")==null&&List.of("Scheduled","Confirmed").contains(a.get("status"))).toList();
+                var arrived=todayAppts.stream().filter(a->a.get("encounter")!=null).toList();
+                long registrations=rows("patients").stream().filter(p->today.equals(p.get("createdAt"))).count();
+                tiles.add(tile("Registrations today",registrations,"New patient records","/patients","teal"));
+                tiles.add(tile("Appointments today",todayAppts.size(),count(todayAppts,"Cancelled")+" cancelled","/appointments","blue"));
+                tiles.add(tile("Awaiting check-in",awaiting.size(),"Expected today","/care/checkin","amber"));
+                tiles.add(tile("Checked in",arrived.size(),"Arrived today","/care/checkin","green"));
+                lists.put("arrivals",awaiting.stream().map(a->item(a.get("time")+" · "+a.get("patientLabel"),a.get("doctorLabel")+" · "+a.get("departmentLabel"),"Waiting for Check-In","/care/appointments/"+a.get("id"))).toList());
+                lists.put("checkins",checkIns.stream().filter(c->Objects.toString(c.get("time"),"").startsWith(today)).sorted(Comparator.comparing((Map<String,String> c)->c.get("time")).reversed()).limit(8).map(c->item(Objects.toString(store.get("patients").getOrDefault(c.get("patient"),Map.of()).get("name"),c.get("patient")),c.get("method")+" · "+Objects.toString(c.get("time"),"").substring(11,16),"Checked in","/care/appointments/"+c.get("appointment"))).toList());
+                out.put("queueByStation",queueByStation(activeQueue));
+                actions.add(item("Register patient","","","/patients?create=1"));actions.add(item("Book appointment","","","/appointments?create=1"));actions.add(item("Check-in desk","","","/care/checkin"));actions.add(item("Queue management","","","/care/queue"));
+            }
+            case "Nurse" -> {
+                var triage=activeQueue.stream().filter(q->"Triage".equals(q.get("station"))).toList();
+                var noVitals=visits.stream().filter(v->today.equals(v.get("date"))&&v.get("status").equals("Waiting")).toList();
+                tiles.add(tile("Waiting for triage",triage.size(),"Triage station","/care/queue","amber"));
+                tiles.add(tile("Visits waiting",noVitals.size(),"Before consultation","/visits?status=Waiting","blue"));
+                tiles.add(tile("In consultation",count(visits,"In consultation"),"With a doctor","/visits?status=In%20consultation","teal"));
+                lists.put("triage",triage.stream().map(q->item(q.get("name")+" · "+q.get("patientLabel"),q.getOrDefault("priority","Normal")+" · "+waitMinutes(q)+" min",q.get("status"),q.get("encounter")!=null?"/care/patients/"+q.get("patient")+"/encounters/"+q.get("encounter")+"?tab=triage":"/care/queue")).toList());
+                out.put("queueByStation",queueByStation(activeQueue));
+                actions.add(item("Triage queue","","","/care/queue"));actions.add(item("Check-in desk","","","/care/checkin"));actions.add(item("Assigned patients","","","/visits"));
+            }
+            case "Laboratory Staff" -> {
+                tiles.add(tile("Samples to collect",count(labs,"Ordered"),"Ordered tests","/laboratory?status=Ordered","amber"));
+                tiles.add(tile("Processing",count(labs,"Collected")+count(labs,"Processing"),"Collected or running","/laboratory?status=Processing","blue"));
+                tiles.add(tile("Results to approve",count(labs,"Result entered"),"Awaiting approval","/laboratory?status=Result%20entered","teal"));
+                tiles.add(tile("Imaging requests",count(imaging,"Requested")+count(imaging,"Scheduled"),"Requested or scheduled","/imaging","rose"));
+                lists.put("worklist",labs.stream().filter(r->List.of("Ordered","Collected","Processing","Result entered").contains(r.get("status"))).limit(10).map(r->item(r.get("id")+" · "+r.get("patientLabel"),r.get("name"),r.get("status"),"/laboratory/"+r.get("id"))).toList());
+                out.put("byStatus",byStatus(labs,List.of("Ordered","Collected","Processing","Result entered","Approved")));
+                actions.add(item("Laboratory worklist","","","/laboratory"));actions.add(item("Imaging worklist","","","/imaging"));
+            }
+            case "Pharmacist" -> {
+                var rx=rows("pharmacy");var stock=rows("stock");
+                tiles.add(tile("Prescriptions to review",count(rx,"Pending"),"Pending","/pharmacy?status=Pending","amber"));
+                tiles.add(tile("Ready to dispense",count(rx,"Reviewed"),"Reviewed","/pharmacy?status=Reviewed","teal"));
+                tiles.add(tile("Low stock",count(stock,"Low stock"),"At or below reorder level","/stock?status=Low%20stock","rose"));
+                tiles.add(tile("Expired batches",count(stock,"Expired"),"Remove from use","/stock?status=Expired","grey"));
+                lists.put("worklist",rx.stream().filter(r->List.of("Pending","Reviewed").contains(r.get("status"))).limit(10).map(r->item(r.get("id")+" · "+r.get("patientLabel"),r.get("medicineLabel")+" · "+r.get("dosage"),r.get("status"),"/pharmacy/"+r.get("id"))).toList());
+                actions.add(item("Prescriptions","","","/pharmacy?status=Pending"));actions.add(item("Medicine stock","","","/stock"));
+            }
+            case "Cashier" -> {
+                var bills=rows("billing");
+                tiles.add(tile("Draft invoices",count(bills,"Draft"),"Prepare and issue","/billing?status=Draft","amber"));
+                tiles.add(tile("Awaiting payment",count(bills,"Issued")+count(bills,"Partially paid"),"Issued or part-paid","/billing?status=Issued","blue"));
+                tiles.add(tile("Outstanding balance",money(bills.stream().filter(b->!b.get("status").equals("Void")).mapToDouble(b->Double.parseDouble(b.get("balance"))).sum()),"Across open invoices","/billing","rose"));
+                lists.put("worklist",bills.stream().filter(b->List.of("Draft","Issued","Partially paid").contains(b.get("status"))).limit(10).map(b->item(b.get("id")+" · "+b.get("patientLabel"),"Balance "+b.get("balance"),b.get("status"),"/billing/"+b.get("id"))).toList());
+                actions.add(item("Invoices","","","/billing"));actions.add(item("Payments","","","/payments"));
+            }
+            default -> { // Administrators
+                var bills=rows("billing");var doctors=rows("doctors");var staff=rows("staff");
+                var visitsToday=visits.stream().filter(v->today.equals(v.get("date"))).toList();
+                tiles.add(tile("Appointments today",todayAppts.size(),count(todayAppts,"Completed")+" completed","/appointments","blue"));
+                tiles.add(tile("Patient visits today",visitsToday.size(),count(visitsToday,"In consultation")+" in consultation","/visits","teal"));
+                tiles.add(tile("Patients in queue",activeQueue.size(),"Waiting, called, in service or on hold","/care/queue","amber"));
+                tiles.add(tile("Outstanding balance",money(bills.stream().filter(b->!b.get("status").equals("Void")).mapToDouble(b->Double.parseDouble(b.get("balance"))).sum()),count(bills,"Paid")+" invoices paid","/billing","rose"));
+                var dept=new LinkedHashMap<String,Map<String,Long>>();
+                for(var d:rows("departments")){var m=new LinkedHashMap<String,Long>();m.put("appointments",todayAppts.stream().filter(a->d.get("id").equals(a.get("department"))).count());m.put("visits",visitsToday.stream().filter(v->d.get("id").equals(v.get("department"))).count());dept.put(d.get("name"),m);}
+                out.put("departments",dept);
+                out.put("staff",Map.of("doctors",byStatus(doctors,List.of("Available","On duty","On leave")),"staff",byStatus(staff,List.of("Active","On leave","Inactive"))));
+                var done=queues.stream().filter(q->q.get("status").equals("Completed")&&q.get("calledAt")!=null&&q.get("queuedAt")!=null).mapToLong(q->{try{return java.time.Duration.between(LocalDateTime.parse(q.get("queuedAt")),LocalDateTime.parse(q.get("calledAt"))).toMinutes();}catch(Exception e){return -1;}}).filter(x->x>=0).summaryStatistics();
+                out.put("queue",Map.of("byStatus",byStatus(queues,List.of("Waiting","Called","In service","On hold","Transferred","Completed","Missed")),"averageWait",done.getCount()==0?"—":Math.round(done.getAverage())+" min","longestWait",activeQueue.stream().filter(q->q.get("status").equals("Waiting")).mapToLong(this::waitMinutes).max().orElse(0)+" min"));
+                out.put("billing",Map.of("byStatus",byStatus(bills,List.of("Draft","Issued","Partially paid","Paid","Void")),"invoiced",money(bills.stream().filter(b->!b.get("status").equals("Void")&&!b.get("status").equals("Draft")).mapToDouble(b->Double.parseDouble(b.get("total"))).sum()),"collected",money(bills.stream().mapToDouble(b->Double.parseDouble(b.get("paid"))).sum())));
+                out.put("queueByStation",queueByStation(activeQueue));
+                actions.add(item("Hospital analytics","","","/overview"));actions.add(item("Staff","","","/staff"));actions.add(item("Roles and permissions","","","/access"));actions.add(item("Telegram Mini App","","","/settings/telegram"));
+            }
+        }
+        if(role.equals("Hospital Director")){
+            actions.clear();actions.add(item("Hospital analytics","","","/overview"));actions.add(item("Reports","","","/reports"));actions.add(item("Audit Logs","","","/audit"));
+            for(var t:tiles)if(List.of("/appointments","/visits","/care/queue").contains(t.get("href")))t.put("href","/overview");
+        }
+        out.put("tiles",tiles);out.put("lists",lists);out.put("actions",actions);return out;
+    }
+    private Map<String,Long> queueByStation(List<Map<String,String>> active){var m=new LinkedHashMap<String,Long>();for(String st:List.of("Triage","Consultation","Laboratory","Imaging","Pharmacy","Payment","Doctor review"))m.put(st,active.stream().filter(q->st.equals(q.getOrDefault("station","Consultation"))).count());return m;}
+
+    @Override public synchronized List<Map<String,String>> clinicalDocuments(String kind,String doctor) {
+        return careDocuments.values().stream().filter(d->kind.equals(d.get("kind"))&&(doctor==null||doctor.isBlank()||doctor.equals(d.get("doctor")))).map(d->{var m=new LinkedHashMap<>(d);var p=store.get("patients").get(d.get("patient"));m.put("patientLabel",p==null?"—":p.get("name"));var doc=store.get("doctors").get(d.get("doctor"));m.put("doctorLabel",doc==null?"—":doc.get("name"));return (Map<String,String>)m;}).sorted(Comparator.comparing((Map<String,String> d)->Objects.toString(d.get("id"),"")).reversed()).toList();
     }
 }

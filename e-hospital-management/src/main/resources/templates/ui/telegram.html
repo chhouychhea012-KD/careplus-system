@@ -4,7 +4,7 @@
 <body class="clinic-page" x-data="telegramSettings()">
 <script th:inline="javascript">window.TG={role:/*[[${role}]]*/ ''};</script>
 <script defer src="/ui/vendor/qrcode.js"></script><script defer src="/ui/telegram.js"></script><script defer src="/ui/vendor/alpine.js"></script>
-<header th:replace="~{ui/fragments/clinic :: top('telegram')}"></header>
+<div class="shell" x-data="shellState()" :class="{'sidebar-compact':compact,'nav-open':mobileNav}"><div class="mobile-nav-backdrop" x-cloak x-show="mobileNav" @click="mobileNav=false"></div><aside th:replace="~{ui/fragments/shell :: sidebar}"></aside><div class="app-main"><header th:replace="~{ui/fragments/shell :: topbar('Settings','Telegram Mini App')}"></header>
 <main class="clinic-shell">
   <div><small class="muted">Settings</small><h1 style="font-size:26px;font-weight:700;margin:0">Telegram Mini App</h1><p class="muted" style="margin:2px 0 0">QR codes open the hospital Mini App in Telegram. Opening the app never grants access by itself: users must link a verified hospital account.</p></div>
   <div class="alert-box error" role="alert" x-show="error" x-text="error" x-cloak></div>
@@ -51,8 +51,20 @@
         <div class="form-row"><label for="tg-bot">Bot username</label><input id="tg-bot" x-model="form.botUsername" placeholder="CarePlusHospitalBot" autocomplete="off"></div>
         <div class="form-row"><label for="tg-short">Mini App short name (optional)</label><input id="tg-short" x-model="form.shortName" placeholder="care" autocomplete="off"><small class="muted">Use the short name from /newapp. Leave empty to use the bot's main Mini App.</small></div>
         <div class="form-row"><label for="tg-url">Public HTTPS application URL</label><input id="tg-url" x-model="form.publicUrl" placeholder="https://care.example.org" autocomplete="off"><small class="muted">In BotFather, the Mini App URL is this address followed by /tg.</small></div>
+        <div class="form-row"><label for="tg-contact">Hospital contact and hours</label><textarea id="tg-contact" rows="4" maxlength="1000" x-model="form.contactInfo"></textarea></div>
         <button class="btn btn-primary" :disabled="busy">Save configuration</button>
       </form>
+      <section class="clinic-card bot-health" style="display:grid;gap:12px">
+        <div class="card2-head"><h2>Hospital bot</h2><span class="badge2" :class="bot.ready?'tone2-green':'tone2-amber'" data-ui-text x-text="bot.ready?'Webhook enabled':'Demo preview'"></span></div>
+        <p class="muted small">Test commands safely here. This preview sends no Telegram messages.</p>
+        <div class="form-row"><label for="bot-command">Bot command</label><select id="bot-command" x-model="command"><option>/start</option><option>/help</option><option>/language</option><option>/contact</option></select></div>
+        <div class="form-row"><label for="bot-language">Reply language</label><select id="bot-language" x-model="previewLanguage"><option value="en">English</option><option value="km">ខ្មែរ</option></select></div>
+        <button type="button" class="btn btn-primary" @click="testBot()" :disabled="busy">Preview bot reply</button>
+        <p class="bot-reply" role="status" x-show="reply" data-no-translate x-text="reply"></p>
+        <dl class="kv2"><div><dt>Webhook secret</dt><dd data-ui-text x-text="bot.secretConfigured?'Configured':'Not configured'"></dd></div><div><dt>Last webhook received</dt><dd data-no-translate x-text="bot.lastUpdate||'—'"></dd></div></dl>
+        <p class="muted small">Webhook receipt does not verify Telegram message delivery.</p>
+        <template x-for="entry in bot.history||[]"><div class="record-row small"><code x-text="entry.command"></code><span data-no-translate x-text="entry.time"></span></div></template>
+      </section>
       <section class="clinic-card" style="display:grid;gap:8px">
         <h2>Link a doctor's Telegram</h2>
         <p class="muted small">Only administrators issue staff codes, after verifying the doctor in person.</p>
@@ -71,5 +83,6 @@
   </div>
   <div class="poster" aria-hidden="true"><h1 x-text="poster.heading"></h1><p data-ui-text x-text="poster.title"></p><div x-html="Clinic.qrSvg(poster.link,420)"></div><p x-text="poster.km"></p><p class="mono" style="font-size:10pt" x-text="poster.link"></p></div>
 </main>
+</div></div>
 </body>
 </html>

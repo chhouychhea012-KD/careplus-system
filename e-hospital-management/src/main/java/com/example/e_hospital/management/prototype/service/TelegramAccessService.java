@@ -25,6 +25,7 @@ public class TelegramAccessService {
     private final String botToken,mode;private final boolean sendEnabled;private final Duration maxAge;private final Clock clock;
     private final SecureRandom random=new SecureRandom();
     private String botUsername="",shortName="",publicUrl="";
+    private String contactInfo="Demo hospital — contact details and opening hours are not configured.";
     private final Map<String,Map<String,String>> linkCodes=new HashMap<>(),links=new LinkedHashMap<>();
     private final Map<String,String> usedInitData=new HashMap<>();
     private final List<Map<String,String>> outbox=new ArrayList<>();
@@ -43,7 +44,7 @@ public class TelegramAccessService {
 
     public synchronized Map<String,Object> settings(){
         var s=new LinkedHashMap<String,Object>();s.put("mode",mode);s.put("botUsername",botUsername);s.put("shortName",shortName);s.put("publicUrl",publicUrl);
-        s.put("tokenConfigured",tokenConfigured());s.put("sendEnabled",sendEnabled&&tokenConfigured());
+        s.put("tokenConfigured",tokenConfigured());s.put("sendEnabled",sendEnabled&&tokenConfigured());s.put("contactInfo",contactInfo);
         boolean live=tokenConfigured()&&!botUsername.isBlank()&&publicUrl.startsWith("https://");
         s.put("status",live?(integration()?"Ready for live Telegram testing":"Configured — switch careplus.mode to integration to require Telegram sign-in"):"Demo — live Telegram opening unavailable");
         var missing=new ArrayList<String>();if(!tokenConfigured())missing.add("Bot token (environment variable CAREPLUS_TELEGRAM_BOT_TOKEN)");if(botUsername.isBlank())missing.add("Bot username");if(!publicUrl.startsWith("https://"))missing.add("Public HTTPS application URL");
@@ -55,7 +56,8 @@ public class TelegramAccessService {
         if(!bot.isBlank()&&!BOT.matcher(bot).matches())bad("Enter the bot username from BotFather, for example CarePlusHospitalBot (it must end in 'bot').");
         if(!sn.isBlank()&&!SHORT.matcher(sn).matches())bad("The Mini App short name uses 3–30 letters, digits or underscores.");
         if(!url.isBlank()){try{var u=URI.create(url);if(!"https".equals(u.getScheme())||u.getHost()==null)bad("The public application URL must start with https://");}catch(IllegalArgumentException ex){bad("Enter a valid https:// URL.");}}
-        botUsername=bot;shortName=sn;publicUrl=url;return settings();
+        String contact=v.getOrDefault("contactInfo",contactInfo).strip();if(contact.length()>1000)bad("Contact information is too long.");
+        botUsername=bot;shortName=sn;publicUrl=url;contactInfo=contact;return settings();
     }
     /** Deep links for posters. start parameters: patient, doctor, arrive-CODE (Telegram allows A-Z a-z 0-9 _ -, max 64). */
     public synchronized Map<String,String> deepLinks(String arrivalCode,String localBase){

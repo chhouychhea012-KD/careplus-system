@@ -55,3 +55,8 @@ window.Clinic=(()=>{
   }
   return {api,t,stepIcon,tone,minutes,qrSvg,scanner,parseCode};
 })();
+/* Shared page shell for clinical pages: sidebar drawer + compact state, and icon rendering after Alpine updates. */
+window.shellState=()=>({mobileNav:false,compact:localStorage.getItem('careplus-compact')==='true'});
+window.Clinic.icons=()=>{try{window.lucide?.createIcons({attrs:{'stroke-width':1.7}})}catch{}};
+document.addEventListener('alpine:initialized',()=>{Clinic.icons();setTimeout(Clinic.icons,400)});
+document.addEventListener('DOMContentLoaded',()=>setTimeout(Clinic.icons,0));

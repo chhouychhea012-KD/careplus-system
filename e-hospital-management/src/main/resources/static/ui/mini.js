@@ -10,8 +10,8 @@ function miniHospital(){
   transferQ:'',transferTo:{station:'Laboratory',doctor:''},summary:{},notifications:localStorage.getItem('careplus-reminders')==='on',
   get patient(){return this.mode==='patient'},
   get today(){return new Date().toLocaleDateString('en-CA')},
-  get tabs(){return this.patient?[{key:'Home',label:'Home',icon:'⌂'},{key:'Book',label:'Book',icon:'＋'},{key:'Appointments',label:'Appointments',icon:'▤'},{key:'Queue',label:'Queue',icon:'#'},{key:'Records',label:'Records',icon:'❏'}]
-    :[{key:'Home',label:'Home',icon:'⌂'},{key:'Queue',label:'Queue',icon:'#'},{key:'Schedule',label:'Schedule',icon:'▤'},{key:'Tasks',label:'Tasks',icon:'✓'},{key:'Certificates',label:'Certificates',icon:'❏'}]},
+  get tabs(){return this.patient?[{key:'Home',label:'Home',icon:'house'},{key:'Book',label:'Book',icon:'calendar-plus'},{key:'Appointments',label:'Appointments',icon:'calendar-days'},{key:'Queue',label:'Queue',icon:'list-ordered'},{key:'Records',label:'Records',icon:'folder-heart'}]
+    :[{key:'Home',label:'Home',icon:'house'},{key:'Queue',label:'Queue',icon:'list-ordered'},{key:'Schedule',label:'Schedule',icon:'calendar-days'},{key:'Tasks',label:'Tasks',icon:'list-checks'},{key:'Certificates',label:'Certificates',icon:'file-badge'}]},
   get maxBookStep(){const b=this.booking;return !b.department?0:!b.doctor?1:!b.time?2:!b.reason.trim()?3:4},
   name(list,id){return (list||[]).find(x=>x.id===id)?.name||''},
   statusWord(s){return {done:'Done',current:'In progress',pending:'Pending',skipped:'Skipped',blocked:'Waiting on others',cancelled:'Cancelled'}[s]||s},

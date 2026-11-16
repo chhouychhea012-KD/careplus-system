@@ -5,6 +5,8 @@ import java.util.*;
 /** Replace this implementation with Oracle-backed repositories in the persistence phase. */
 public interface HospitalService {
     List<String> availableSlots(String doctor,String date);
+    Map<String,String> doctorSchedule(String doctor,String date);
+    Map<String,String> saveDoctorSchedule(Map<String,String> values,String actor);
     Map<String,Object> careContext(String patient,String encounter);
     Map<String,String> careAction(String patient,String encounter,String action,Map<String,String> values,String actor);
     Map<String,Object> mobileContext(String role,String identity);
@@ -20,7 +22,13 @@ public interface HospitalService {
     /** Patient self check-in after scanning the hospital arrival QR. */
     Map<String,String> arrivalCheckIn(String patient,String appointment,String code,String actor);
     List<Map<String,String>> checkInHistory(String appointmentOrPatient);
+    /** Role-specific dashboard: what this role needs to act on today. Derived from live service data only. */
+    Map<String,Object> roleDashboard(String role,String doctor);
+    /** Clinical documents of one kind (e.g. certificate) across encounters; doctor narrows to their own. */
+    List<Map<String,String>> clinicalDocuments(String kind,String doctor);
     RecordPage list(String module,String search,String status,String filter,String from,String to,int page,int size);
+    /** Same as list, sorted by a column before paging (sort="" keeps insertion order; dir is asc or desc). */
+    default RecordPage list(String module,String search,String status,String filter,String from,String to,int page,int size,String sort,String dir){return list(module,search,status,filter,from,to,page,size);}
     Map<String,String> get(String module,String id);
     Map<String,String> save(String module,String id,Map<String,String> values,String actor);
     void delete(String module,String id,String actor);
